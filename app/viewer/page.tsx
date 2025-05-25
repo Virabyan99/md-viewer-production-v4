@@ -1,7 +1,21 @@
+"use client";
+import { useState } from "react";
 import { LexicalViewer } from "@/components/LexicalViewer";
-
-export const metadata = { title: "Viewer" };
+import { FileDropZone } from "@/components/FileDropZone";
 
 export default function ViewerPage() {
-  return <LexicalViewer />;
+  const [fileId, setFileId] = useState<number | null>(null);
+
+  return (
+    <>
+      <FileDropZone
+        onFileStored={(id) => {
+          setFileId(id);
+        }}
+      />
+      <div className="mt-8">
+        <LexicalViewer initialMarkdown={fileId ? undefined : null} />
+      </div>
+    </>
+  );
 }
