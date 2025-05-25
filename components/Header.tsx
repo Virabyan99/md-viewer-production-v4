@@ -2,7 +2,7 @@ import { FC } from "react";
 import Link from "next/link";
 import { IconMarkdown } from "@tabler/icons-react";
 import { Button } from "./ui/button";
-
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Header: FC = () => (
   <header className="sticky top-0 z-30 w-full border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50">
@@ -20,6 +20,7 @@ export const Header: FC = () => (
             GitHub
           </Link>
         </Button>
+        <ThemeToggle />
       </nav>
     </div>
   </header>
