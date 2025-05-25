@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SkipToContent } from "@/components/SkipToContent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +25,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
+        <SkipToContent />
         <ThemeProvider>
           <Header />
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</main>
+          <main
+            id="main"
+            role="main"
+            className="mx-auto w-full max-w-7xl flex-1 px-4 py-8"
+          >
+            {children}
+          </main>
           <Footer />
         </ThemeProvider>
       </body>
