@@ -56,47 +56,55 @@ function DraggableTab({
   const [{ x, zIndex }, api] = useSpring(() => ({ x: 0, zIndex: 0 }));
 
   const bind = useDrag(
-    ({ down, movement: [mx] }) => {
+    ({ down, movement: [mx], last }) => {
       const el = container.current;
       if (!el) return;
       api.start({ x: down ? mx : 0, immediate: down, zIndex: down ? 10 : 0 });
 
-      const siblings = Array.from(el.children) as HTMLElement[];
-      const width = siblings[index].offsetWidth;
-
-      const newIndex = Math.min(
-        siblings.length - 1,
-        Math.max(0, Math.round((index * width + mx) / width)),
-      );
-      if (newIndex !== index) onReorder(index, newIndex);
-      if (!down) api.start({ x: 0 });
+      if (last) {
+        const siblings = Array.from(el.children) as HTMLElement[];
+        const width = siblings[index].offsetWidth;
+        const dragDistance = mx;
+        const slotsMoved = Math.round(dragDistance / width);
+        const newIndex = Math.min(siblings.length - 1, Math.max(0, index + slotsMoved));
+        if (newIndex !== index) {
+          onReorder(index, newIndex);
+        }
+        api.start({ x: 0 });
+      }
     },
     { axis: "x", filterTaps: true },
   );
 
   return (
     <animated.div style={{ x, zIndex }} {...bind()}>
-      <Button
-        role="tab"
-        aria-selected={active}
-        variant="ghost"
-        size="sm"
-        className={clsx(
-          "group relative rounded-md px-3 py-1.5",
-          active && "bg-primary/10 font-semibold",
-        )}
-        onClick={onActivate}
-      >
-        <span className="truncate max-w-[8rem]">{tab.title}</span>
-        <IconX
-          aria-label="Close tab"
-          className="ml-2 size-4 shrink-0 opacity-0 group-hover:opacity-100"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-        />
-      </Button>
-    </animated.div>
+  <Button
+    role="tab"
+    aria-selected={active}
+    variant="ghost"
+    size="sm"
+    className={clsx(
+      "group relative rounded-md px-3 py-1.5",
+      active && "bg-primary/10 font-semibold",
+    )}
+    onClick={onActivate}
+  >
+    <span className="truncate max-w-[8rem]">{tab.title}</span>
+    <div
+      className="ml-2"
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        console.log("Closing tab:", tab.id);
+        onClose();
+      }}
+    >
+      <IconX
+        aria-label="Close tab"
+        className="size-4 z-20 shrink-0 opacity-0 group-hover:opacity-100 pointer-events-auto"
+      />
+    </div>
+  </Button>
+</animated.div>
   );
 }

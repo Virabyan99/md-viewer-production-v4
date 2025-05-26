@@ -8,7 +8,7 @@ export interface Tab {
   lastUsed: number; // ms epoch
 }
 
-interface TabState {
+export interface TabState {
   tabs: Tab[];
   activeId: number | null;
   openTab: (id: number, title: string) => void;
@@ -38,8 +38,10 @@ const storeImpl: StateCreator<TabState> = (set) => ({
 
   closeTab: (id) =>
     set((draft) => {
+      console.log("Before close:", draft.tabs.map(t => t.id)); // Debug log
       draft.tabs = draft.tabs.filter((t) => t.id !== id);
       if (draft.activeId === id) draft.activeId = draft.tabs.at(-1)?.id ?? null;
+      console.log("After close:", draft.tabs.map(t => t.id)); // Debug log
     }),
 
   setActive: (id) =>

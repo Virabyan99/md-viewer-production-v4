@@ -1,9 +1,12 @@
+"use client";
+
 import { FC } from "react";
 import Link from "next/link";
 import { IconMarkdown } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { ExportMenu } from "./ExportMenu";
+import { FilePicker } from "./FilePicker";
 
 export const Header: FC = () => (
   <header
@@ -35,6 +38,7 @@ export const Header: FC = () => (
         </Button>
         <ThemeToggle />
         <ExportMenu />
+        <FilePicker />
       </nav>
     </div>
   </header>

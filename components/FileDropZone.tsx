@@ -4,12 +4,9 @@ import { useCallback, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { fileSchema } from "@/lib/validation";
 import { db } from "@/lib/db";
+import { useTabStore } from "@/lib/tabStore";
 
-interface Props {
-  onFileStored?: (id: number) => void;
-}
-
-export function FileDropZone({ onFileStored }: Props) {
+export function FileDropZone() {
   const [isOver, setIsOver] = useState(false);
   const animation = useSpring({ scale: isOver ? 1.05 : 1, opacity: isOver ? 0.8 : 1 });
 
@@ -35,10 +32,10 @@ export function FileDropZone({ onFileStored }: Props) {
           updatedAt: Date.now(),
         };
         const id = await db.files.add(record);
-        onFileStored?.(id);
+        useTabStore.getState().openTab(id, file.name);
       }
     },
-    [onFileStored],
+    [],
   );
 
   return (

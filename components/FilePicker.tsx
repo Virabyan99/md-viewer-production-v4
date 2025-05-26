@@ -4,12 +4,10 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { fileSchema } from "@/lib/validation";
 import { db } from "@/lib/db";
+import { IconUpload } from "@tabler/icons-react";
+import { useTabStore } from "@/lib/tabStore";
 
-interface Props {
-  onFileStored?: (id: number) => void;
-}
-
-export function FilePicker({ onFileStored }: Props) {
+export function FilePicker() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,9 +26,8 @@ export function FilePicker({ onFileStored }: Props) {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });
-      onFileStored?.(id);
+      useTabStore.getState().openTab(id, file.name);
     }
-    // Reset input to allow re-selecting the same file
     e.target.value = "";
   };
 
@@ -39,16 +36,16 @@ export function FilePicker({ onFileStored }: Props) {
       <Button
         variant="outline"
         onClick={() => inputRef.current?.click()}
-        className="w-40 justify-center"
+        className="justify-center"
       >
-        Open File
+        <IconUpload />
       </Button>
       <input
         ref={inputRef}
         type="file"
         accept=".md,.markdown,.txt"
         onChange={handleChange}
-        className="sr-only" // Visually hidden but accessible
+        className="sr-only"
       />
     </>
   );

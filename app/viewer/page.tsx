@@ -1,33 +1,53 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LexicalViewer } from "@/components/LexicalViewer";
 import { FileDropZone } from "@/components/FileDropZone";
-import { FilePicker } from "@/components/FilePicker";
 import { TabBar } from "@/components/TabBar";
 import { TabHydrate } from "@/components/TabHydrate";
 import { useTabStore } from "@/lib/tabStore";
 import { db } from "@/lib/db";
 
 export default function ViewerPage() {
-  const [fileId, setFileId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState(null);
+  const [tabs, setTabs] = useState([]);
+  const [markdown, setMarkdown] = useState<string | null>(null);
 
-  const handleFileStored = async (id: number) => {
-    const record = await db.files.get(id);
-    if (!record) return;
-    useTabStore.getState().openTab(id, record.name);
-    setFileId(id);
-  };
+  useEffect(() => {
+    setActiveId(useTabStore.getState().activeId);
+    setTabs(useTabStore.getState().tabs);
+
+    const unsubscribe = useTabStore.subscribe((state) => {
+      setActiveId(state.activeId);
+      setTabs(state.tabs);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (activeId) {
+      db.files.get(activeId).then((record) => {
+        if (record) {
+          setMarkdown(record.content);
+        }
+      });
+    } else {
+      setMarkdown(null);
+    }
+  }, [activeId]);
 
   return (
     <TabHydrate>
       <TabBar />
-      <div className="mt-4 flex gap-4">
-        <FilePicker onFileStored={handleFileStored} />
-        <FileDropZone onFileStored={handleFileStored} />
-      </div>
-      <div className="mt-8">
-        <LexicalViewer initialMarkdown={fileId ? undefined : null} />
-      </div>
+      {tabs.length === 0 ? (
+        <div className="mt-8 flex flex-col items-center justify-center gap-4">
+          <FileDropZone />
+        </div>
+      ) : (
+        <div className="mt-8 mx-auto max-w-4xl">
+          <LexicalViewer markdown={markdown} />
+        </div>
+      )}
     </TabHydrate>
   );
 }
