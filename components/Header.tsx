@@ -6,7 +6,12 @@ import { IconMarkdown } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { ExportMenu } from "./ExportMenu";
-import { FilePicker } from "./FilePicker";
+import dynamic from "next/dynamic";
+
+// Dynamically import FilePicker with SSR disabled, accessing the named export
+const FilePicker = dynamic(() => import("@/components/FilePicker").then(mod => mod.FilePicker), {
+  ssr: false,
+});
 
 export const Header: FC = () => (
   <header

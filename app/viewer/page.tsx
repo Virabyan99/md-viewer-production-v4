@@ -1,11 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { LexicalViewer } from "@/components/LexicalViewer";
-import { FileDropZone } from "@/components/FileDropZone";
+import dynamic from "next/dynamic";
 import { TabBar } from "@/components/TabBar";
 import { TabHydrate } from "@/components/TabHydrate";
 import { useTabStore } from "@/lib/tabStore";
 import { db } from "@/lib/db";
+
+// Dynamically import FileDropZone with SSR disabled, accessing the named export
+const FileDropZone = dynamic(() => import("@/components/FileDropZone").then(mod => mod.FileDropZone), {
+  ssr: false,
+});
 
 export default function ViewerPage() {
   const [activeId, setActiveId] = useState(null);
