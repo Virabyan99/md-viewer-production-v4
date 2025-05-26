@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import Link from "next/link";
-import { IconMarkdown } from "@tabler/icons-react";
+import { IconBrandGithub, IconMarkdown } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { ExportMenu } from "./ExportMenu";
@@ -19,18 +19,18 @@ export const Header: FC = () => (
     aria-label="Global header"
     className="sticky top-0 z-30 w-full border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50"
   >
-    <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+    <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1">
       <Link
         href="/"
         aria-label="Home - Markdown Viewer"
-        className="flex items-center gap-2 font-semibold"
+        className="flex items-center  font-semibold"
       >
-        <IconMarkdown className="size-5" aria-hidden />
+        <IconMarkdown className="size-11" aria-hidden />
         <span className="sr-only">Home</span>
       </Link>
       <nav role="navigation" aria-label="Primary navigation" className="flex gap-2">
         <Button asChild variant="ghost" size="sm">
-          <Link href="/viewer">Viewer</Link>
+          <Link href="/viewer">MD Viewer</Link>
         </Button>
         <Button asChild variant="ghost" size="sm">
           <Link
@@ -38,7 +38,8 @@ export const Header: FC = () => (
             target="_blank"
             rel="noreferrer"
           >
-            GitHub
+            
+            <IconBrandGithub className="size-5" aria-hidden />
           </Link>
         </Button>
         <ThemeToggle />

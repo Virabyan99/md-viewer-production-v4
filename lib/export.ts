@@ -43,8 +43,31 @@ function downloadBlob(data: string, name: string, type: string) {
 
 function embedTailwindCSS() {
   return `
-    body { font-family: 'Noto Sans', sans-serif; }
-    h1, h2, h3 { font-weight: 600; }
-    code { background: #f5f5f5; padding: 0.2em 0.4em; border-radius: 4px; }
+    body { 
+      font-family: 'Noto Sans', sans-serif; 
+      background-color: #ffffff; /* White background */
+      color: #000000; /* Black text */
+    }
+    h1, h2, h3 { 
+      font-weight: 600; 
+      color: #000000; /* Black headings */
+    }
+    code { 
+      background: #f5f5f5; /* Light gray background for code */
+      padding: 0.2em 0.4em; 
+      border-radius: 4px; 
+      color: #000000; /* Black code text */
+    }
+    /* Override prose styles to avoid oklch colors */
+    .prose { 
+      color: #000000; /* Ensure prose text is black */
+    }
+    .prose h1, .prose h2, .prose h3 { 
+      color: #000000; /* Black headings in prose */
+    }
+    .prose code { 
+      background: #f5f5f5; 
+      color: #000000; 
+    }
   `;
 }
