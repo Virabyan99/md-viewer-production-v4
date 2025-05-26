@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconMarkdown } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import { ExportMenu } from "./ExportMenu";
 
 export const Header: FC = () => (
   <header
@@ -33,6 +34,7 @@ export const Header: FC = () => (
           </Link>
         </Button>
         <ThemeToggle />
+        <ExportMenu />
       </nav>
     </div>
   </header>

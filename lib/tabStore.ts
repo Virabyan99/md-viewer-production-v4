@@ -14,6 +14,7 @@ interface TabState {
   openTab: (id: number, title: string) => void;
   closeTab: (id: number) => void;
   setActive: (id: number) => void;
+  reorder: (from: number, to: number) => void; // New reorder function
 }
 
 const MAX_TABS = 10;
@@ -48,6 +49,14 @@ const storeImpl: StateCreator<TabState> = (set) => ({
       tab.lastUsed = Date.now();
       draft.activeId = id;
       draft.tabs = draft.tabs.filter((t) => t.id !== id).concat(tab);
+    }),
+
+  reorder: (from, to) =>
+    set((draft) => {
+      const [moved] = draft.tabs.splice(from, 1);
+      draft.tabs.splice(to, 0, moved);
+      moved.lastUsed = Date.now(); // Update lastUsed to preserve LRU
+      draft.activeId = moved.id;
     }),
 });
 
