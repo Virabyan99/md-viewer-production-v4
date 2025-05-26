@@ -5,10 +5,13 @@ import { animated, useSpring } from "@react-spring/web";
 import { fileSchema } from "@/lib/validation";
 import { db } from "@/lib/db";
 import { useTabStore } from "@/lib/tabStore";
+import { useTheme } from "./ThemeProvider";
 
 export function FileDropZone() {
   const [isOver, setIsOver] = useState(false);
-  const animation = useSpring({ scale: isOver ? 1.05 : 1, opacity: isOver ? 0.8 : 1 });
+  const animation = useSpring({ transform: isOver ? "scale(1.2)" : "scale(1)" });
+  const { theme } = useTheme();
+  const iconSrc = theme === 'dark' ? '/transparent_dark.png' : '/transparent_icon.png';
 
   const handleDrop = useCallback(
     async (e: React.DragEvent<HTMLDivElement>) => {
@@ -35,23 +38,27 @@ export function FileDropZone() {
         useTabStore.getState().openTab(id, file.name);
       }
     },
-    [],
+    []
   );
 
   return (
-    <animated.div
-      style={animation}
+    <div
       onDragOver={(e) => {
         e.preventDefault();
         setIsOver(true);
       }}
       onDragLeave={() => setIsOver(false)}
       onDrop={handleDrop}
-      className="flex h-32 w-full items-center justify-center rounded border-2 border-dashed border-muted-foreground/40 bg-muted/30 text-sm text-muted-foreground"
+      className="flex h-[64vh] w-full items-center justify-center"
       role="region"
       aria-label="Drag and drop markdown files"
     >
-      <p>Drop <code>.md</code> / <code>.markdown</code> / <code>.txt</code> here</p>
-    </animated.div>
+      <animated.img
+        style={animation}
+        src={iconSrc}
+        alt="Drop files here"
+        className="w-32 h-32"
+      />
+    </div>
   );
 }
