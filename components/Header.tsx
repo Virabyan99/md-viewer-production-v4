@@ -29,7 +29,7 @@ export const Header: FC = () => (
         </Button>
         <Button asChild variant="ghost" size="sm">
           <Link
-            href="https://github.com/your-username/markdown-viewer"
+            href="https://github.com/Virabyan99/md-viewer-production-v4"
             target="_blank"
             rel="noreferrer"
           >
