@@ -36,9 +36,9 @@ export function FilePicker() {
       <Button
         variant="outline"
         onClick={() => inputRef.current?.click()}
-        className="justify-center"
+        className="justify-center size-8"
       >
-        <IconUpload />
+        <IconUpload className="size-5" />
       </Button>
       <input
         ref={inputRef}

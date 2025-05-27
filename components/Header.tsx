@@ -25,7 +25,7 @@ export const Header: FC = () => (
         aria-label="Home - Markdown Viewer"
         className="flex items-center  font-semibold"
       >
-        <IconMarkdown className="size-11" aria-hidden />
+        <IconMarkdown className="size-8" aria-hidden />
         <span className="sr-only">Home</span>
       </Link>
       <nav role="navigation" aria-label="Primary navigation" className="flex gap-2">
