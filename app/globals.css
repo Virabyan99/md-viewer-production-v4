@@ -112,6 +112,11 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  scroll-margin-top: 5rem; /* Adjust based on your header height */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
