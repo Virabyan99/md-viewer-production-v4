@@ -43,18 +43,18 @@ export default function ViewerPage() {
 
   return (
     <TabHydrate>
-    <TabBar />
-    <div className="py-8">
-      {tabs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-4">
-          <FileDropZone />
-        </div>
-      ) : (
-        <div className="mx-auto max-w-4xl">
-          <LexicalViewer markdown={markdown} />
-        </div>
-      )}
-    </div>
-  </TabHydrate>
+      <TabBar />
+      <div className="py-8">
+        {tabs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <FileDropZone />
+          </div>
+        ) : (
+          <div className="mx-auto max-w-4xl">
+            <LexicalViewer markdown={markdown} />
+          </div>
+        )}
+      </div>
+    </TabHydrate>
   );
 }

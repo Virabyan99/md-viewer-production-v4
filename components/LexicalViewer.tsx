@@ -4,13 +4,14 @@ import { useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
 import { PluginProvider } from "./PluginContext";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+// Import MarkdownParser
+import { MarkdownParser } from "@/lib/markdownParser";
 
 interface LexicalViewerProps {
   /**
@@ -65,9 +66,8 @@ function MarkdownLoader({ markdown }: { markdown: string | null }) {
 
   useEffect(() => {
     if (markdown) {
-      editor.update(() => {
-        $convertFromMarkdownString(markdown, TRANSFORMERS);
-      });
+      const parser = new MarkdownParser(editor);
+      parser.import(markdown);
     }
   }, [editor, markdown]);
 
