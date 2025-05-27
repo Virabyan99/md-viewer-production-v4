@@ -124,6 +124,38 @@
   @apply bg-muted/30;
 }
 
+.prose ul, .prose ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose ul ul, .prose ol ul,
+.prose ul ol, .prose ol ol {
+  margin-top: 0;               /* tighter within nested lists */
+  margin-bottom: 0;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-muted-foreground/40 pl-4 italic text-muted-foreground;
+}
+
+/* Enforce max 3‑level indent */
+.prose ul ul ul,
+.prose ol ol ol {
+  @apply list-disc pl-8;
+}
+
+
+.prose ul > li[data-checked="true"]::before {
+  content: "[x] ";
+  color: var(--muted-foreground);
+}
+
+.prose ul > li[data-checked="false"]::before {
+  content: "[ ] ";
+  color: var(--muted-foreground);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
