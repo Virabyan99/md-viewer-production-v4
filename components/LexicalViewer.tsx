@@ -10,26 +10,31 @@ import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
 import { PluginProvider } from "./PluginContext";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-// Import MarkdownParser
 import { MarkdownParser } from "@/lib/markdownParser";
 
 interface LexicalViewerProps {
-  /**
-   * When null, a placeholder UI is shown. Otherwise, the Markdown content to render.
-   */
   markdown: string | null;
 }
 
-/**
- * Production-ready, read-only Markdown viewer.
- */
 export function LexicalViewer({ markdown }: LexicalViewerProps) {
   const composerConfig = {
     namespace: "markdown-viewer",
     editable: false,
-    theme: {}, // We’ll use Tailwind for styling
+    theme: {
+      heading: {
+        h1: "text-4xl font-bold",
+        h2: "text-3xl font-bold",
+      },
+      list: {
+        ul: "list-disc pl-6",
+        ol: "list-decimal pl-6",
+      },
+      quote: "border-l-4 pl-4 italic",
+      code: "bg-muted p-1 rounded",
+      link: "text-blue-500 underline",
+    },
     onError(error: Error) {
-      throw error; // Caught by error boundary in components/error.tsx
+      throw error;
     },
     nodes: [
       HeadingNode,
@@ -45,7 +50,7 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
   return (
     <LexicalComposer initialConfig={composerConfig}>
       <MarkdownLoader markdown={markdown} />
-      <PluginProvider plugins={[] /* Add plugins in future lessons */}>
+      <PluginProvider plugins={[]}>
         {markdown ? (
           <ContentEditable className="prose dark:prose-invert max-w-none" />
         ) : (
@@ -58,9 +63,6 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
   );
 }
 
-/**
- * Loads Markdown content into the Lexical editor.
- */
 function MarkdownLoader({ markdown }: { markdown: string | null }) {
   const [editor] = useLexicalComposerContext();
 

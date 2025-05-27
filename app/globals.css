@@ -117,6 +117,13 @@
   scroll-margin-top: 5rem; /* Adjust based on your header height */
 }
 
+.prose code {
+  @apply rounded bg-muted px-1.5 py-0.5 text-sm;
+}
+.dark .prose code {
+  @apply bg-muted/30;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

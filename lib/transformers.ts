@@ -1,9 +1,3 @@
-import {
-  TRANSFORMERS as BASE,
-  HEADING, // Use the single HEADING transformer
-} from "@lexical/markdown";
-
-export const TRANSFORMERS = [
-  ...BASE,
-  HEADING, // Add HEADING instead of HEADING1, HEADING2, etc.
-] as const;
+import { TRANSFORMERS } from "@lexical/markdown";
+console.log("Transformers:", TRANSFORMERS); // Debug
+export { TRANSFORMERS };
