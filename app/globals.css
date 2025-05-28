@@ -76,6 +76,7 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --baseline: 1.5rem; /* 24px on base 16 */
 }
 
 .dark {
@@ -112,9 +113,23 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@media (min-width: 768px) {
+  :root { --baseline: 1.75rem; }
+}
+
+.prose {
+  max-width: 65ch;
+}
+
+.prose * + * {
+  margin-top: var(--baseline);
+}
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  scroll-margin-top: 5rem; /* Adjust based on your header height */
+  scroll-margin-top: calc(var(--baseline) * 2);
+  line-height: 1.2;
+  margin-top: var(--baseline);
+  margin-bottom: calc(var(--baseline) / 2);
 }
 
 .prose code {
@@ -127,11 +142,16 @@
 .prose ul, .prose ol {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: calc(var(--baseline) / 2);
 }
 
 .prose ul ul, .prose ol ul,
 .prose ul ol, .prose ol ol {
-  margin-top: 0;               /* tighter within nested lists */
+  margin-top: 0;
   margin-bottom: 0;
 }
 
@@ -139,12 +159,11 @@
   @apply border-l-4 border-muted-foreground/40 pl-4 italic text-muted-foreground;
 }
 
-/* Enforce max 3‑level indent */
+/* Enforce max 3-level indent */
 .prose ul ul ul,
 .prose ol ol ol {
   @apply list-disc pl-8;
 }
-
 
 .prose ul > li[data-checked="true"]::before {
   content: "[x] ";
@@ -154,20 +173,6 @@
 .prose ul > li[data-checked="false"]::before {
   content: "[ ] ";
   color: var(--muted-foreground);
-}
-
-
-/* Existing styles... */
-
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  scroll-margin-top: 5rem;
-}
-
-.prose code {
-  @apply rounded bg-muted px-1.5 py-0.5 text-sm;
-}
-.dark .prose code {
-  @apply bg-muted/30;
 }
 
 /* Add these new styles for horizontal rules */
@@ -182,8 +187,6 @@
 .prose hr + p {
   @apply mt-6;
 }
-
-/* Existing styles continue... */
 
 @layer base {
   * {

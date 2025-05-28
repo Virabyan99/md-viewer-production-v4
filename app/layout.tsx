@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Inter, Roboto_Flex  } from 'next/font/google'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const roboto = Roboto_Flex({ subsets: ["latin"], variable: "--font-roboto" })
+
 export const metadata: Metadata = {
   title: { default: 'Markdown Viewer', template: '%s · Markdown Viewer' },
   description: 'Secure, client-side, drag-and-drop Markdown renderer.',
@@ -27,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable}`}>
       <body className="flex min-h-screen flex-col bg-background font-sans antialiased">
         <SkipToContent />
         <ThemeProvider>
