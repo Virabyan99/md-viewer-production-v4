@@ -156,6 +156,35 @@
   color: var(--muted-foreground);
 }
 
+
+/* Existing styles... */
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  scroll-margin-top: 5rem;
+}
+
+.prose code {
+  @apply rounded bg-muted px-1.5 py-0.5 text-sm;
+}
+.dark .prose code {
+  @apply bg-muted/30;
+}
+
+/* Add these new styles for horizontal rules */
+.prose hr {
+  @apply my-8 border-t border-muted-foreground/40;
+}
+
+.prose p + hr {
+  @apply mt-6;
+}
+
+.prose hr + p {
+  @apply mt-6;
+}
+
+/* Existing styles continue... */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

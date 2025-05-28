@@ -11,6 +11,7 @@ import { CodeNode } from "@lexical/code";
 import { PluginProvider } from "./PluginContext";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { MarkdownParser } from "@/lib/markdownParser";
+import { TypographyPlugin } from "./TypographyPlugin";
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -48,19 +49,19 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
   };
 
   return (
-    <LexicalComposer initialConfig={composerConfig}>
-      <MarkdownLoader markdown={markdown} />
-      <PluginProvider plugins={[]}>
-        {markdown ? (
-          <ContentEditable className="prose dark:prose-invert max-w-none" />
-        ) : (
-          <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
-            <p>No document loaded.<br />Drag a <code>.md</code> file to begin.</p>
-          </div>
-        )}
-      </PluginProvider>
-    </LexicalComposer>
-  );
+  <LexicalComposer initialConfig={composerConfig}>
+    <MarkdownLoader markdown={markdown} />
+    <PluginProvider plugins={[TypographyPlugin]}>
+      {markdown ? (
+        <ContentEditable className="prose dark:prose-invert max-w-none" />
+      ) : (
+        <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
+          <p>No document loaded.<br />Drag a <code>.md</code> file to begin.</p>
+        </div>
+      )}
+    </PluginProvider>
+  </LexicalComposer>
+);
 }
 
 function MarkdownLoader({ markdown }: { markdown: string | null }) {
