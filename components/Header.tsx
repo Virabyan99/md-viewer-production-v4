@@ -17,7 +17,7 @@ export const Header: FC = () => (
   <header
     role="banner"
     aria-label="Global header"
-    className="sticky top-0 z-30 w-full border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50"
+    className="sticky top-0 z-30 w-full  bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50"
   >
     <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1">
       <Link

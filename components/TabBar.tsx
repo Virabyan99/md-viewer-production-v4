@@ -18,7 +18,7 @@ export function TabBar() {
   return (
     <div
       ref={containerRef}
-      className="flex sticky top-10 z-40 items-center gap-1 overflow-x-auto   px-2 py-2">
+      className="flex sticky  top-10 z-40 bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50 gap-1  overflow-x-auto   px-2 py-1">
       {tabs.map((tab, index) => (
         <DraggableTab
           key={tab.id}
