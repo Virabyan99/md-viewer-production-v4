@@ -14,7 +14,7 @@ export interface TabState {
   openTab: (id: number, title: string) => void;
   closeTab: (id: number) => void;
   setActive: (id: number) => void;
-  reorder: (from: number, to: number) => void; // New reorder function
+  reorder: (from: number, to: number) => void;
 }
 
 const MAX_TABS = 10;
@@ -25,23 +25,29 @@ const storeImpl: StateCreator<TabState> = (set) => ({
 
   openTab: (id, title) =>
     set((draft) => {
-      draft.tabs = draft.tabs.filter((t) => t.id !== id);
-      draft.tabs.push({ id, title, lastUsed: Date.now() });
+      const newTab = { id, title, lastUsed: Date.now() };
+      draft.tabs.push(newTab);
       draft.activeId = id;
       if (draft.tabs.length > MAX_TABS) {
-        draft.tabs.shift();
-        if (!draft.tabs.some((t) => t.id === draft.activeId)) {
-          draft.activeId = draft.tabs.at(-1)!.id;
-        }
+        const oldestTab = draft.tabs.reduce((oldest, current) =>
+          oldest.lastUsed < current.lastUsed ? oldest : current
+        );
+        draft.tabs = draft.tabs.filter((t) => t.id !== oldestTab.id);
       }
     }),
 
   closeTab: (id) =>
     set((draft) => {
-      console.log("Before close:", draft.tabs.map(t => t.id)); // Debug log
+      const wasActive = draft.activeId === id;
       draft.tabs = draft.tabs.filter((t) => t.id !== id);
-      if (draft.activeId === id) draft.activeId = draft.tabs.at(-1)?.id ?? null;
-      console.log("After close:", draft.tabs.map(t => t.id)); // Debug log
+      if (wasActive && draft.tabs.length > 0) {
+        const mostRecentTab = draft.tabs.reduce((mostRecent, current) =>
+          mostRecent.lastUsed > current.lastUsed ? mostRecent : current
+        );
+        draft.activeId = mostRecentTab.id;
+      } else if (draft.tabs.length === 0) {
+        draft.activeId = null;
+      }
     }),
 
   setActive: (id) =>
@@ -50,14 +56,13 @@ const storeImpl: StateCreator<TabState> = (set) => ({
       if (!tab) return;
       tab.lastUsed = Date.now();
       draft.activeId = id;
-      draft.tabs = draft.tabs.filter((t) => t.id !== id).concat(tab);
     }),
 
   reorder: (from, to) =>
     set((draft) => {
       const [moved] = draft.tabs.splice(from, 1);
       draft.tabs.splice(to, 0, moved);
-      moved.lastUsed = Date.now(); // Update lastUsed to preserve LRU
+      moved.lastUsed = Date.now();
       draft.activeId = moved.id;
     }),
 });

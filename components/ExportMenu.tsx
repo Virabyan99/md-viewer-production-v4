@@ -24,7 +24,7 @@ export function ExportMenu() {
         <DropdownMenuItem onSelect={() => exportTxt(filename, markdown)}>TXT</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => exportMd(filename, markdown)}>Markdown</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => exportHtml(filename, html)}>HTML</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => exportPdf(filename, html)}>PDF</DropdownMenuItem>
+        {/* <DropdownMenuItem onSelect={() => exportPdf(filename, html)}>PDF</DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
