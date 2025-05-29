@@ -12,6 +12,7 @@ import { PluginProvider } from "./PluginContext";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { MarkdownParser } from "@/lib/markdownParser";
 import { TypographyPlugin } from "./TypographyPlugin";
+import { lexicalTheme } from "@/lib/lexicalTheme";
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -21,19 +22,7 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
   const composerConfig = {
     namespace: "markdown-viewer",
     editable: false,
-    theme: {
-      heading: {
-        h1: "text-4xl font-bold",
-        h2: "text-3xl font-bold",
-      },
-      list: {
-        ul: "list-disc pl-6",
-        ol: "list-decimal pl-6",
-      },
-      quote: "border-l-4 pl-4 italic",
-      code: "bg-muted p-1 rounded",
-      link: "text-blue-500 underline",
-    },
+    theme: lexicalTheme, // Replaced inline theme
     onError(error: Error) {
       throw error;
     },
@@ -49,19 +38,19 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
   };
 
   return (
-  <LexicalComposer initialConfig={composerConfig}>
-    <MarkdownLoader markdown={markdown} />
-    <PluginProvider plugins={[TypographyPlugin]}>
-      {markdown ? (
-        <ContentEditable className="prose dark:prose-invert max-w-none" />
-      ) : (
-        <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
-          <p>No document loaded.<br />Drag a <code>.md</code> file to begin.</p>
-        </div>
-      )}
-    </PluginProvider>
-  </LexicalComposer>
-);
+    <LexicalComposer initialConfig={composerConfig}>
+      <MarkdownLoader markdown={markdown} />
+      <PluginProvider plugins={[TypographyPlugin]}>
+        {markdown ? (
+          <ContentEditable className="prose dark:prose-invert max-w-none" />
+        ) : (
+          <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
+            <p>No document loaded.<br />Drag a <code>.md</code> file to begin.</p>
+          </div>
+        )}
+      </PluginProvider>
+    </LexicalComposer>
+  );
 }
 
 function MarkdownLoader({ markdown }: { markdown: string | null }) {
