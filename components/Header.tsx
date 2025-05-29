@@ -29,19 +29,8 @@ export const Header: FC = () => (
         <span className="sr-only">Home</span>
       </Link>
       <nav role="navigation" aria-label="Primary navigation" className="flex gap-2">
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/viewer">MD Viewer</Link>
-        </Button>
-        <Button asChild variant="ghost" size="sm">
-          <Link
-            href="https://github.com/Virabyan99/md-viewer-production-v4"
-            target="_blank"
-            rel="noreferrer"
-          >
-            
-            <IconBrandGithub className="size-5" aria-hidden />
-          </Link>
-        </Button>
+       
+       
         <ThemeToggle />
         <ExportMenu />
         <FilePicker />

@@ -41,7 +41,7 @@ export default function RootLayout({
             className="mx-auto w-full max-w-7xl flex-1 px-4">
             {children}
           </main>
-          <Footer />
+          
         </ThemeProvider>
       </body>
     </html>
