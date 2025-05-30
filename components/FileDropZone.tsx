@@ -68,7 +68,7 @@ export function FileDropZone() {
       }}
       onDragLeave={() => setIsOver(false)}
       onDrop={handleDrop}
-      className="flex h-[64vh] w-full items-center justify-center"
+      className="flex h-[81vh] w-full items-center justify-center"
       role="region"
       aria-label="Drag and drop or click to upload markdown files" // Updated for accessibility
     >

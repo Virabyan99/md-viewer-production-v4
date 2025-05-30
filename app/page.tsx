@@ -44,7 +44,7 @@ export default function ViewerPage() {
   return (
     <TabHydrate>
       <TabBar />
-      <div className="py-8">
+      <div className="py-8 h-full">
         {tabs.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4">
             <FileDropZone />
