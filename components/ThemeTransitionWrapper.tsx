@@ -2,8 +2,9 @@
 
 import { useThemeTransition } from "@/lib/useThemeTransition";
 import { ReactNode } from "react";
+import { animated } from "@react-spring/web"; // Import animated
 
 export function ThemeTransitionWrapper({ children }: { children: ReactNode }) {
-  const styles = useThemeTransition(); // Call the hook here, in a client component
-  return <div style={styles}>{children}</div>;
+  const styles = useThemeTransition(); // Returns animated styles
+  return <animated.div style={styles}>{children}</animated.div>; // Use animated.div
 }

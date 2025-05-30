@@ -40,7 +40,7 @@ export default function RootLayout({
             <main
               id="main"
               role="main"
-              className="mx-auto w-full max-w-7xl flex-1 px-4"
+              className="mx-auto w-full max-w-7xl flex-1 "
             >
               {children}
             </main>
