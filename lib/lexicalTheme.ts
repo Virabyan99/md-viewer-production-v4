@@ -5,11 +5,11 @@
 export const lexicalTheme: Record<string, string | Record<string, string>> = {
   paragraph: "mb-[var(--baseline)]",
   text: {
-    bold: "font-semibold",
-    italic: "italic",
-    underline: "underline",
-    strikethrough: "line-through",
-    code: "px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[0.9em]",
+    bold: "font-semibold text-brand-900 dark:text-brand-100",
+    italic: "italic text-brand-800 dark:text-brand-200",
+    underline: "underline decoration-brand-500/60 underline-offset-2",
+    strikethrough: "line-through opacity-70",
+    code: "font-mono text-[0.95em] rounded px-1 py-0.5 bg-surface-50 dark:bg-surface-900/40",
   },
   heading: {
     h1: "text-2xl font-bold tracking-tight",
@@ -23,21 +23,12 @@ export const lexicalTheme: Record<string, string | Record<string, string>> = {
     nested: {
       listitem: "my-0",
     },
-    ol: "list-decimal pl-6",
-    ul: "list-disc pl-6",
+    ol: "list-decimal pl-6 marker:text-brand-600 dark:marker:text-brand-400",
+    ul: "list-disc pl-6 marker:text-brand-600 dark:marker:text-brand-400",
     listitem: "my-1",
   },
-  quote: "border-l-4 pl-4 italic text-muted-foreground my-[var(--baseline)]",
+  quote: "border-l-4 pl-4 bg-surface-50 dark:bg-surface-900/30 italic text-muted-foreground",
   code: "rounded bg-muted px-4 py-2 font-mono text-sm",
-  link: "text-blue-500 underline",
-  hr: "my-[calc(var(--baseline)*1.5)] border-t border-muted-foreground/40",
+  link: "text-brand underline hover:text-brand/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+  hr: "my-[calc(var(--baseline)*1.5)] border-t border-surface-50 dark:border-surface-900/40",
 };
-
-/**
- * Example of extending the theme for custom nodes:
- * import { lexicalTheme } from "./lexicalTheme";
- * export const extendedTheme = {
- *   ...lexicalTheme,
- *   callout: "border-l-2 pl-3 bg-yellow-50 dark:bg-yellow-900/20",
- * };
- */
