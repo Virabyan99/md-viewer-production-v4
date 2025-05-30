@@ -6,8 +6,8 @@ import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ThemeTransitionWrapper } from "@/components/ThemeTransitionWrapper";
-import { NextIntlClientProvider } from "next-intl"; // For client provider
-import { getMessages } from "next-intl/server"; // For server-side message fetching
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -38,8 +38,8 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Fetch translation messages for the current locale
-  const messages = await getMessages();
+  // Fetch translation messages, explicitly passing the locale
+  const messages = await getMessages({ locale });
 
   return (
     <html lang={locale} className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${roboto.variable}`}>
