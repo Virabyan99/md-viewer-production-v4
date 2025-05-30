@@ -1,0 +1,21 @@
+{
+  "header": {
+    "home": "Home"
+  },
+  "toggle": {
+    "theme": "Toggle theme"
+  },
+  "export": {
+    "menu": "Export",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "No document loaded.",
+      "part2": "Drag a",
+      "part3": "file to begin."
+    }
+  }
+}

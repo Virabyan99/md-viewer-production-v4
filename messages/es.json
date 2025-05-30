@@ -1,0 +1,21 @@
+{
+  "header": {
+    "home": "Inicio"
+  },
+  "toggle": {
+    "theme": "Cambiar tema"
+  },
+  "export": {
+    "menu": "Exportar",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "No hay documento cargado.",
+      "part2": "Arrastre un",
+      "part3": "archivo para comenzar."
+    }
+  }
+}

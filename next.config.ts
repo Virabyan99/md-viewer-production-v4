@@ -1,10 +1,8 @@
-import type { NextConfig } from "next";
+// next.config.ts
+const withNextIntl = require('next-intl/plugin')(); // No path needed for i18n/request.ts
 
-const nextConfig: NextConfig = {
-  /* config options here */
+module.exports = withNextIntl({
   typescript: {
     ignoreBuildErrors: true,
-  }
-};
-
-export default nextConfig;
+  },
+});
