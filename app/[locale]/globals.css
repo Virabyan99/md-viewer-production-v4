@@ -188,6 +188,13 @@
   @apply mt-6;
 }
 
+/* app/[locale]/globals.css */
+/* ... existing styles ... */
+
+.font-cmn { font-family: "Noto Sans SC", var(--font-sans); }
+.font-hin { font-family: "Noto Sans", var(--font-sans); }
+.font-rus { font-family: "Noto Sans", var(--font-sans); }
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -1,3 +1,4 @@
+// components/LexicalViewer.tsx
 'use client'
 
 import { useEffect } from 'react'
@@ -14,6 +15,7 @@ import { MarkdownParser } from '@/lib/markdownParser'
 import { TypographyPlugin } from './TypographyPlugin'
 import { lexicalTheme } from '@/lib/lexicalTheme'
 import { useTranslations } from 'next-intl'
+import { ensureFontFor } from '@/lib/fontLoader' // Add this import
 
 interface LexicalViewerProps {
   markdown: string | null
@@ -64,6 +66,7 @@ function MarkdownLoader({ markdown }: { markdown: string | null }) {
 
   useEffect(() => {
     if (markdown) {
+      ensureFontFor(markdown) // Load font based on content
       const parser = new MarkdownParser(editor)
       parser.import(markdown)
     }
