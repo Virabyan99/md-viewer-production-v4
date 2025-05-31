@@ -17,5 +17,10 @@
       "part2": "Glissez un",
       "part3": "fichier pour commencer."
     }
+  },
+  "ui": {
+    "lang": {
+      "select": "Sélectionner la Langue"
+    }
   }
 }

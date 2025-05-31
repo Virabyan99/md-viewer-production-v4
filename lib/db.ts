@@ -36,3 +36,14 @@ class ViewerDB extends Dexie {
 }
 
 export const db = new ViewerDB();
+
+const LOCALE_KEY = "locale";
+
+export async function saveLocale(locale: string) {
+  await db.prefs.put({ key: LOCALE_KEY, value: locale });
+}
+
+export async function loadLocale(): Promise<string | null> {
+  const r = await db.prefs.get(LOCALE_KEY);
+  return r?.value ?? null;
+}

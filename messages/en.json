@@ -17,5 +17,10 @@
       "part2": "Drag a",
       "part3": "file to begin."
     }
+  },
+  "ui": {
+    "lang": {
+      "select": "Select Language"
+    }
   }
 }
