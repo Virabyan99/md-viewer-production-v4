@@ -1,0 +1,26 @@
+{
+  "header": {
+    "home": "首頁"
+  },
+  "toggle": {
+    "theme": "切換主題"
+  },
+  "export": {
+    "menu": "匯出",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "未載入文件。",
+      "part2": "拖放",
+      "part3": "文件以開始。"
+    }
+  },
+  "ui": {
+    "lang": {
+      "select": "選擇語言"
+    }
+  }
+}

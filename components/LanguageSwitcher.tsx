@@ -1,4 +1,3 @@
-// components/LanguageSwitcher.tsx
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +9,14 @@ const LOCALES = [
   { code: "en", label: "English" },
   { code: "es", label: "Español" },
   { code: "fr", label: "Français" },
+  { code: "zh-Hans", label: "简体中文" },
+  { code: "zh-Hant", label: "繁體中文" },
+  { code: "ja", label: "日本語" },
+  { code: "ko", label: "한국어" },
+  { code: "hy", label: "Հայերեն" },
+  { code: "ru", label: "Русский" },
+  { code: "fa", label: "فارسی" },
+  { code: "ar", label: "العربية" },
 ];
 
 export function LanguageSwitcher() {
@@ -20,8 +27,8 @@ export function LanguageSwitcher() {
 
   const handleChange = (value: string) => {
     setLocale(value);
-    const [, , ...rest] = pathname.split("/"); // Remove current locale from path
-    router.push(`/${value}/${rest.join("/")}`); // Navigate to new locale path
+    const [, , ...rest] = pathname.split("/");
+    router.push(`/${value}/${rest.join("/")}`);
   };
 
   return (

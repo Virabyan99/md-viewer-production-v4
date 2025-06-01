@@ -1,8 +1,8 @@
 import { createNavigation } from 'next-intl/navigation';
 
-export const locales = ['en', 'es', 'fr'] as const;
-export const localePrefix = 'always'; // Enforce locale prefixes in URLs (e.g., /en, /es)
-export const defaultLocale = 'en'; // Set a default locale
+export const locales = ['en', 'es', 'fr', 'zh-Hans', 'zh-Hant', 'ja', 'ko', 'hy', 'ru', 'fa', 'ar'] as const;
+export const localePrefix = 'always';
+export const defaultLocale = 'en';
 
 export const { Link, redirect, usePathname, useRouter } = createNavigation({
   locales,

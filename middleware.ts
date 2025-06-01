@@ -1,12 +1,11 @@
-// middleware.ts
 import createMiddleware from 'next-intl/middleware';
 
 export default createMiddleware({
-  locales: ['en', 'es', 'fr'],
+  locales: ['en', 'es', 'fr', 'zh-Hans', 'zh-Hant', 'ja', 'ko', 'hy', 'ru', 'fa', 'ar'],
   defaultLocale: 'en',
-  localePrefix: 'always', // Enforces /en, /es, /fr in URLs
+  localePrefix: 'always',
 });
 
 export const config = {
-  matcher: ['/', '/(en|es|fr)/:path*'], // Match root and locale-prefixed paths
+  matcher: ['/', '/(en|es|fr|zh-Hans|zh-Hant|ja|ko|hy|ru|fa|ar)/:path*'],
 };

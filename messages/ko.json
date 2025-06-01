@@ -1,0 +1,26 @@
+{
+  "header": {
+    "home": "홈"
+  },
+  "toggle": {
+    "theme": "테마 전환"
+  },
+  "export": {
+    "menu": "내보내기",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "문서가 로드되지 않았습니다.",
+      "part2": "파일을",
+      "part3": "드래그하여 시작하세요."
+    }
+  },
+  "ui": {
+    "lang": {
+      "select": "언어 선택"
+    }
+  }
+}

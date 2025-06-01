@@ -1,0 +1,26 @@
+{
+  "header": {
+    "home": "ホーム"
+  },
+  "toggle": {
+    "theme": "テーマを切り替える"
+  },
+  "export": {
+    "menu": "エクスポート",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "ドキュメントが読み込まれていません。",
+      "part2": "ファイルを",
+      "part3": "ドラッグして開始します。"
+    }
+  },
+  "ui": {
+    "lang": {
+      "select": "言語を選択"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+    "header": {
+      "home": "Домой"
+    },
+    "toggle": {
+      "theme": "Переключить тему"
+    },
+    "export": {
+      "menu": "Экспорт",
+      "txt": "TXT",
+      "md": "Markdown",
+      "html": "HTML"
+    },
+    "viewer": {
+      "placeholder": {
+        "part1": "Документ не загружен.",
+        "part2": "Перетащите",
+        "part3": "файл для начала."
+      }
+    },
+    "ui": {
+      "lang": {
+        "select": "Выбрать язык"
+      }
+    }
+  }

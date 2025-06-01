@@ -21,7 +21,19 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return [{ locale: "en" }, { locale: "es" }, { locale: "fr" }];
+  return [
+    { locale: "en" },
+    { locale: "es" },
+    { locale: "fr" },
+    { locale: "zh-Hans" },
+    { locale: "zh-Hant" },
+    { locale: "ja" },
+    { locale: "ko" },
+    { locale: "hy" },
+    { locale: "ru" },
+    { locale: "fa" },
+    { locale: "ar" },
+  ];
 }
 
 export default async function LocaleLayout({
@@ -33,12 +45,10 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  // Validate the locale
-  if (!["en", "es", "fr"].includes(locale)) {
+  if (!["en", "es", "fr", "zh-Hans", "zh-Hant", "ja", "ko", "hy", "ru", "fa", "ar"].includes(locale)) {
     notFound();
   }
 
-  // Fetch translation messages, explicitly passing the locale
   const messages = await getMessages({ locale });
 
   return (

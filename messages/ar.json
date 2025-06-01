@@ -1,0 +1,26 @@
+{
+    "header": {
+      "home": "الرئيسية"
+    },
+    "toggle": {
+      "theme": "تبديل السمة"
+    },
+    "export": {
+      "menu": "تصدير",
+      "txt": "TXT",
+      "md": "Markdown",
+      "html": "HTML"
+    },
+    "viewer": {
+      "placeholder": {
+        "part1": "لم يتم تحميل المستند.",
+        "part2": "اسحب",
+        "part3": "ملف لبدء."
+      }
+    },
+    "ui": {
+      "lang": {
+        "select": "اختر اللغة"
+      }
+    }
+  }
