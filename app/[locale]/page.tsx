@@ -6,6 +6,7 @@ import { TabBar } from "@/components/TabBar";
 import { TabHydrate } from "@/components/TabHydrate";
 import { useTabStore } from "@/lib/tabStore";
 import { db } from "@/lib/db";
+import { TTSController } from "@/components/TTSController"; // Add this import
 
 // Dynamically import FileDropZone with SSR disabled, accessing the named export
 const FileDropZone = dynamic(() => import("@/components/FileDropZone").then(mod => mod.FileDropZone), {
@@ -46,12 +47,15 @@ export default function ViewerPage() {
       <TabBar />
       <div className="py-8 h-full">
         {tabs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col cursor-pointer items-center justify-center gap-4">
             <FileDropZone />
           </div>
         ) : (
-          <div className="mx-auto max-w-4xl">
-            <LexicalViewer markdown={markdown} />
+          <div className="space-y-4">
+            <TTSController containerId="viewer-content" />
+            <div id="viewer-content" className="mx-auto max-w-4xl">
+              <LexicalViewer markdown={markdown} />
+            </div>
           </div>
         )}
       </div>

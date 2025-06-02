@@ -22,5 +22,12 @@
     "lang": {
       "select": "Select Language"
     }
+  },
+  "tts": {
+    "speak": "Speak",
+    "stop": "Stop",
+    "pause": "Pause",
+    "resume": "Resume",
+    "speed": "Speed"
   }
 }
