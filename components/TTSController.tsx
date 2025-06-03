@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Play, Pause, CircleStop } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { franc } from "franc";
+import VoicePicker from "@/components/VoicePicker"; // Import VoicePicker
+import { getPreferredVoice } from "@/lib/voiceRegistry"; // Import voice utility
 
 interface Props {
   containerId: string;
@@ -58,6 +60,18 @@ export function TTSController({ containerId }: Props) {
     utter.rate = rate;
     utter.pitch = 1.1;
     utter.volume = 0.85;
+
+    // Use preferred voice if available, otherwise fallback to language match
+    const preferredVoice = getPreferredVoice(lang);
+    if (preferredVoice) {
+      utter.voice = preferredVoice;
+    } else {
+      const voices = synth.getVoices();
+      const matchingVoice = voices.find((v) =>
+        v.lang.toLowerCase().startsWith(lang.toLowerCase())
+      );
+      if (matchingVoice) utter.voice = matchingVoice;
+    }
 
     utter.onboundary = (e) => {
       if (e.name === "word") {
@@ -161,6 +175,7 @@ export function TTSController({ containerId }: Props) {
 
   return (
     <div className="flex items-center gap-2 rounded border bg-surface-50 p-2 dark:bg-surface-900/40">
+      <VoicePicker label="Voice" /> {/* Add VoicePicker here */}
       <Button
         variant="outline"
         size="sm"
