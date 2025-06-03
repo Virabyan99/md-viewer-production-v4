@@ -6,7 +6,8 @@ import { TabBar } from "@/components/TabBar";
 import { TabHydrate } from "@/components/TabHydrate";
 import { useTabStore } from "@/lib/tabStore";
 import { db } from "@/lib/db";
-import { TTSController } from "@/components/TTSController"; // Add this import
+import { TTSController } from "@/components/TTSController";
+import SelectionTTS from "@/components/SelectionTTS"; // Add this import
 
 // Dynamically import FileDropZone with SSR disabled, accessing the named export
 const FileDropZone = dynamic(() => import("@/components/FileDropZone").then(mod => mod.FileDropZone), {
@@ -56,6 +57,7 @@ export default function ViewerPage() {
             <div id="viewer-content" className="mx-auto max-w-4xl">
               <LexicalViewer markdown={markdown} />
             </div>
+            <SelectionTTS /> {/* Add this line */}
           </div>
         )}
       </div>

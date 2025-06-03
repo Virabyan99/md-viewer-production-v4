@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, CircleStop } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { chunkByLanguage } from "@/lib/chunkByLanguage"; // New import
+import { chunkByLanguage } from "@/lib/chunkByLanguage";
 import { getPreferredVoice } from "@/lib/voiceRegistry";
 import VoicePicker from "@/components/VoicePicker";
 
@@ -26,7 +26,6 @@ export function TTSController({ containerId }: Props) {
     setMounted(true);
   }, []);
 
-  // Language code mapping: ISO 639-3 (franc) to BCP 47 (SpeechSynthesis)
   const languageMap: Record<string, string> = {
     eng: "en-US",
     spa: "es-ES",
@@ -39,7 +38,7 @@ export function TTSController({ containerId }: Props) {
     rus: "ru-RU",
     fas: "fa-IR",
     ara: "ar-SA",
-    und: "en-US", // Fallback for undetermined
+    und: "en-US",
   };
 
   const getSelectedText = () => window?.getSelection()?.toString().trim() ?? "";
@@ -52,7 +51,7 @@ export function TTSController({ containerId }: Props) {
 
     chunks.forEach(({ text, lang }, idx) => {
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = languageMap[lang] || "en-US"; // Map to BCP 47
+      utter.lang = languageMap[lang] || "en-US";
 
       const voice =
         getPreferredVoice(utter.lang) ??
@@ -63,7 +62,6 @@ export function TTSController({ containerId }: Props) {
       utter.pitch = 1.1;
       utter.volume = 0.85;
 
-      // Live captions
       utter.onstart = () => setCurrentCaption({ text, lang: utter.lang });
 
       if (idx === chunks.length - 1) {
@@ -73,7 +71,7 @@ export function TTSController({ containerId }: Props) {
         };
       }
 
-      synth.speak(utter); // Queued in order
+      synth.speak(utter);
     });
 
     setPlaying(true);
