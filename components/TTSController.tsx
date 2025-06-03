@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, CircleStop } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { franc } from "franc";
-import VoicePicker from "@/components/VoicePicker"; // Import VoicePicker
-import { getPreferredVoice } from "@/lib/voiceRegistry"; // Import voice utility
+import { chunkByLanguage } from "@/lib/chunkByLanguage"; // New import
+import { getPreferredVoice } from "@/lib/voiceRegistry";
+import VoicePicker from "@/components/VoicePicker";
 
 interface Props {
   containerId: string;
@@ -15,110 +15,83 @@ interface Props {
 
 export function TTSController({ containerId }: Props) {
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
-  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [playing, setPlaying] = useState(false);
   const [paused, setPaused] = useState(false);
   const [rate, setRate] = useState(1);
   const [mounted, setMounted] = useState(false);
-  const [fullText, setFullText] = useState("");
-  const [startOffset, setStartOffset] = useState(0);
-  const [lastCharIndex, setLastCharIndex] = useState(0);
+  const [currentCaption, setCurrentCaption] = useState<{ text: string; lang: string } | null>(null);
   const t = useTranslations("tts");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Language code mapping (ISO 639-3 to BCP 47)
+  // Language code mapping: ISO 639-3 (franc) to BCP 47 (SpeechSynthesis)
   const languageMap: Record<string, string> = {
     eng: "en-US",
     spa: "es-ES",
     fra: "fr-FR",
-    cmn: "zh-CN", // Simplified Chinese
-    zho: "zh-TW", // Traditional Chinese
+    cmn: "zh-CN",
+    zho: "zh-TW",
     jpn: "ja-JP",
     kor: "ko-KR",
     hye: "hy-AM",
     rus: "ru-RU",
     fas: "fa-IR",
     ara: "ar-SA",
+    und: "en-US", // Fallback for undetermined
   };
 
   const getSelectedText = () => window?.getSelection()?.toString().trim() ?? "";
 
-  const detectLanguage = (text: string): string => {
-    const detectedLang = franc(text, { minLength: 10 });
-    return languageMap[detectedLang] || "en-US"; // Fallback to English
-  };
-
-  const speak = (text: string, offset: number, lang: string) => {
+  const speak = useCallback((rawText: string) => {
     if (!synth) return;
-    if (synth.speaking) synth.cancel();
+    synth.cancel();
 
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang; // Set detected language
-    utter.rate = rate;
-    utter.pitch = 1.1;
-    utter.volume = 0.85;
+    const chunks = chunkByLanguage(rawText);
 
-    // Use preferred voice if available, otherwise fallback to language match
-    const preferredVoice = getPreferredVoice(lang);
-    if (preferredVoice) {
-      utter.voice = preferredVoice;
-    } else {
-      const voices = synth.getVoices();
-      const matchingVoice = voices.find((v) =>
-        v.lang.toLowerCase().startsWith(lang.toLowerCase())
-      );
-      if (matchingVoice) utter.voice = matchingVoice;
-    }
+    chunks.forEach(({ text, lang }, idx) => {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = languageMap[lang] || "en-US"; // Map to BCP 47
 
-    utter.onboundary = (e) => {
-      if (e.name === "word") {
-        setLastCharIndex(e.charIndex);
-        highlightWord(offset + e.charIndex);
+      const voice =
+        getPreferredVoice(utter.lang) ??
+        synth.getVoices().find(v => v.lang.toLowerCase().startsWith(utter.lang.toLowerCase()));
+      if (voice) utter.voice = voice;
+
+      utter.rate = rate;
+      utter.pitch = 1.1;
+      utter.volume = 0.85;
+
+      // Live captions
+      utter.onstart = () => setCurrentCaption({ text, lang: utter.lang });
+
+      if (idx === chunks.length - 1) {
+        utter.onend = () => {
+          setPlaying(false);
+          setCurrentCaption(null);
+        };
       }
-    };
 
-    utter.onend = () => {
-      clearHighlights();
-      setPlaying(false);
-      setPaused(false);
-      setLastCharIndex(0);
-    };
+      synth.speak(utter); // Queued in order
+    });
 
-    utterRef.current = utter;
-    synth.speak(utter);
     setPlaying(true);
-    setPaused(false);
-  };
+  }, [synth, rate]);
 
   const handleSpeak = () => {
     if (playing) {
       stop();
     } else {
       const containerText = document.getElementById(containerId)?.innerText || "";
-      setFullText(containerText);
       const selected = getSelectedText();
-      let textToSpeak = containerText;
-      let offset = 0;
-
-      if (selected) {
-        const start = containerText.indexOf(selected);
-        if (start !== -1) {
-          textToSpeak = selected;
-          offset = start;
-        }
-      }
-
-      const lang = detectLanguage(containerText); // Detect language of full text
-      setStartOffset(offset);
-      speak(textToSpeak, offset, lang);
+      const textToSpeak = selected || containerText;
+      speak(textToSpeak);
     }
   };
 
   const togglePlay = () => {
-    if (!synth || !utterRef.current) return;
+    if (!synth) return;
     if (synth.paused) {
       synth.resume();
       setPaused(false);
@@ -133,41 +106,9 @@ export function TTSController({ containerId }: Props) {
       synth.cancel();
       setPlaying(false);
       setPaused(false);
-      setLastCharIndex(0);
-      clearHighlights();
+      setCurrentCaption(null);
     }
   };
-
-  const highlightWord = (idx: number) => {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const range = document.createRange();
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-    let offset = 0;
-    while (walker.nextNode()) {
-      const node = walker.currentNode as Text;
-      if (idx < offset + node.length) {
-        range.setStart(node, idx - offset);
-        range.setEnd(node, idx - offset + 1);
-        const sel = window.getSelection();
-        sel?.removeAllRanges();
-        sel?.addRange(range);
-        break;
-      }
-      offset += node.length;
-    }
-  };
-
-  const clearHighlights = () => window.getSelection()?.removeAllRanges();
-
-  useEffect(() => {
-    if (playing && !paused && synth && utterRef.current) {
-      synth.cancel();
-      const remainingText = fullText.slice(startOffset + lastCharIndex);
-      const lang = detectLanguage(fullText);
-      speak(remainingText, startOffset + lastCharIndex, lang);
-    }
-  }, [rate]);
 
   if (!mounted) return null;
 
@@ -175,7 +116,7 @@ export function TTSController({ containerId }: Props) {
 
   return (
     <div className="flex items-center gap-2 rounded border bg-surface-50 p-2 dark:bg-surface-900/40">
-      <VoicePicker label="Voice" /> {/* Add VoicePicker here */}
+      <VoicePicker label="Voice" />
       <Button
         variant="outline"
         size="sm"
@@ -213,6 +154,15 @@ export function TTSController({ containerId }: Props) {
         />
         <span>{rate.toFixed(2)}×</span>
       </label>
+      {currentCaption && (
+        <div
+          className="sr-only"
+          aria-live="polite"
+          data-lang={currentCaption.lang}
+        >
+          {currentCaption.text}
+        </div>
+      )}
     </div>
   );
 }
