@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, CircleStop } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { franc } from "franc";
 
 interface Props {
-  containerId: string; // ID of the element containing the rendered markdown
+  containerId: string;
 }
 
 export function TTSController({ containerId }: Props) {
@@ -26,13 +27,34 @@ export function TTSController({ containerId }: Props) {
     setMounted(true);
   }, []);
 
+  // Language code mapping (ISO 639-3 to BCP 47)
+  const languageMap: Record<string, string> = {
+    eng: "en-US",
+    spa: "es-ES",
+    fra: "fr-FR",
+    cmn: "zh-CN", // Simplified Chinese
+    zho: "zh-TW", // Traditional Chinese
+    jpn: "ja-JP",
+    kor: "ko-KR",
+    hye: "hy-AM",
+    rus: "ru-RU",
+    fas: "fa-IR",
+    ara: "ar-SA",
+  };
+
   const getSelectedText = () => window?.getSelection()?.toString().trim() ?? "";
 
-  const speak = (text: string, offset: number) => {
+  const detectLanguage = (text: string): string => {
+    const detectedLang = franc(text, { minLength: 10 });
+    return languageMap[detectedLang] || "en-US"; // Fallback to English
+  };
+
+  const speak = (text: string, offset: number, lang: string) => {
     if (!synth) return;
     if (synth.speaking) synth.cancel();
 
     const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang; // Set detected language
     utter.rate = rate;
     utter.pitch = 1.1;
     utter.volume = 0.85;
@@ -75,8 +97,9 @@ export function TTSController({ containerId }: Props) {
         }
       }
 
+      const lang = detectLanguage(containerText); // Detect language of full text
       setStartOffset(offset);
-      speak(textToSpeak, offset);
+      speak(textToSpeak, offset, lang);
     }
   };
 
@@ -123,12 +146,12 @@ export function TTSController({ containerId }: Props) {
 
   const clearHighlights = () => window.getSelection()?.removeAllRanges();
 
-  // Handle rate changes during playback
   useEffect(() => {
     if (playing && !paused && synth && utterRef.current) {
       synth.cancel();
       const remainingText = fullText.slice(startOffset + lastCharIndex);
-      speak(remainingText, startOffset + lastCharIndex);
+      const lang = detectLanguage(fullText);
+      speak(remainingText, startOffset + lastCharIndex, lang);
     }
   }, [rate]);
 
