@@ -1,4 +1,3 @@
-// app\[locale]\page.tsx
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { LexicalViewer } from "@/components/LexicalViewer";
@@ -43,10 +42,14 @@ export default function ViewerPage() {
     }
   }, [activeId]);
 
-  // Function to process dropped files
   const processFiles = async (files: File[]) => {
     for (const file of files) {
-      const res = fileSchema.safeParse(file);
+      const fileData = {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      };
+      const res = fileSchema.safeParse(fileData);
       if (!res.success) {
         console.warn(res.error.format());
         continue;
@@ -61,11 +64,10 @@ export default function ViewerPage() {
         updatedAt: Date.now(),
       };
       const id = await db.files.add(record);
-      useTabStore.getState().openTab(id, file.name); // Opens a new tab and sets it as active
+      useTabStore.getState().openTab(id, file.name);
     }
   };
 
-  // Handle drag-and-drop events
   const handleDrop = useCallback(
     async (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
@@ -76,17 +78,13 @@ export default function ViewerPage() {
   );
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault();
   };
 
   return (
     <TabHydrate>
       <TabBar />
-      <div
-        className="py-8 h-full"
-        onDrop={handleDrop}        // Enable dropping on the entire page
-        onDragOver={handleDragOver} // Enable drag-over detection
-      >
+      <div className="py-8 h-full" onDrop={handleDrop} onDragOver={handleDragOver}>
         {tabs.length === 0 ? (
           <div className="flex flex-col cursor-pointer items-center justify-center gap-4">
             <FileDropZone />
