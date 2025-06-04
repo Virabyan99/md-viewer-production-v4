@@ -20,7 +20,14 @@
   },
   "ui": {
     "lang": {
-      "select": "Sélectionner la Langue"
+      "select": "Sélectionner la langue"
     }
+  },
+  "tts": {
+    "speak": "Parler",
+    "stop": "Arrêter",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "speed": "Vitesse"
   }
 }
