@@ -3,11 +3,21 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
-import { Play, Pause, CircleStop } from 'lucide-react'
+import { Play, Pause, CircleStop, Settings } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { chunkByLanguage } from '@/lib/chunkByLanguage'
 import { getPreferredVoice } from '@/lib/voiceRegistry'
 import VoicePicker from '@/components/VoicePicker'
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover'
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip'
 
 interface Props {
   containerId: string
@@ -19,6 +29,7 @@ export function TTSController({ containerId }: Props) {
   const [paused, setPaused] = useState(false)
   const [rate, setRate] = useState(1)
   const [mounted, setMounted] = useState(false)
+  const [hasText, setHasText] = useState(false)
   const [currentCaption, setCurrentCaption] = useState<{
     text: string
     lang: string
@@ -27,12 +38,28 @@ export function TTSController({ containerId }: Props) {
   const chunksRef = useRef<{ text: string; lang: string }[]>([])
   const currentIndexRef = useRef<number>(0)
   const currentPositionRef = useRef<number>(0)
-  // Add ref to track the current utterance
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Monitor text availability in the DOM
+  useEffect(() => {
+    const checkText = () => {
+      const text = document.getElementById(containerId)?.innerText;
+      if (text && text.trim() !== '') {
+        setHasText(true);
+      }
+    };
+
+    checkText(); // Check immediately on mount
+
+    if (!hasText) {
+      const interval = setInterval(checkText, 500); // Check every 500ms
+      return () => clearInterval(interval); // Cleanup interval
+    }
+  }, [hasText, containerId]);
 
   const languageMap: Record<string, string> = {
     eng: 'en-US',
@@ -60,7 +87,7 @@ export function TTSController({ containerId }: Props) {
         return
       }
 
-      synth.cancel() // Clear any pending utterances
+      synth.cancel()
 
       const { text, lang } = chunksRef.current[index]
       const slicedText = text.slice(startPos)
@@ -113,17 +140,14 @@ export function TTSController({ containerId }: Props) {
 
       utter.onerror = (e) => {
         if (e.utterance === currentUtteranceRef.current) {
-          // Only log and update state for unexpected errors on the current utterance
           if (e.error !== 'canceled' && e.error !== 'interrupted') {
-            console.error('SpeechSynthesisUtterance error for current utterance:', e)
+            console.error('SpeechSynthesisUtterance error:', e)
             setPlaying(false)
             setPaused(false)
           }
         }
-        // Ignore errors from previous utterances (e.g., due to synth.cancel())
       }
 
-      // Set the current utterance
       currentUtteranceRef.current = utter
 
       setPlaying(true)
@@ -198,46 +222,74 @@ export function TTSController({ containerId }: Props) {
 
   if (!mounted) return null
 
-  const hasText = !!document.getElementById(containerId)?.innerText
-
   return (
-    <div className="flex items-center gap-2 rounded border bg-surface-50 p-2 dark:bg-surface-900/40">
-      <VoicePicker label="Voice" />
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleSpeak}
-        aria-pressed={playing || paused}
-        disabled={!hasText}>
-        {playing ? t('pause') : paused ? t('resume') : t('speak')}
-      </Button>
-      {(playing || paused) && (
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={stopSpeech}
-          aria-label={t('stop')}>
-          <CircleStop className="size-5" />
-        </Button>
-      )}
-      <label className="flex items-center gap-2 text-sm">
-        <span id="rate-label">{t('speed')}</span>
-        <Slider
-          aria-labelledby="rate-label"
-          min={0.5}
-          max={2}
-          step={0.25}
-          value={[rate]}
-          onValueChange={(v) => setRate(v[0])}
-          className="w-40"
-        />
-        <span>{rate.toFixed(2)}×</span>
-      </label>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={handleSpeak}
+              aria-label={playing ? t('pause') : paused ? t('resume') : t('speak')}
+              disabled={!hasText}
+            >
+              {playing ? <Pause className="size-5" /> : <Play className="size-5" />}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {playing ? t('pause') : paused ? t('resume') : t('speak')}
+          </TooltipContent>
+        </Tooltip>
+        {(playing || paused) && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={stopSpeech}
+                aria-label={t('stop')}
+              >
+                <CircleStop className="size-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {t('stop')}
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="icon" variant="ghost" aria-label="TTS Settings">
+            <Settings className="size-5" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-80">
+          <div className="space-y-4">
+            <VoicePicker label="Voice" />
+            <label className="flex items-center gap-2 text-sm">
+              <span id="rate-label">{t('speed')}</span>
+              <Slider
+                aria-labelledby="rate-label"
+                min={0.5}
+                max={2}
+                step={0.25}
+                value={[rate]}
+                onValueChange={(v) => setRate(v[0])}
+                className="w-full"
+              />
+              <span>{rate.toFixed(2)}×</span>
+            </label>
+          </div>
+        </PopoverContent>
+      </Popover>
       {currentCaption && (
         <div
           className="sr-only"
           aria-live="polite"
-          data-lang={currentCaption.lang}>
+          data-lang={currentCaption.lang}
+        >
           {currentCaption.text}
         </div>
       )}
