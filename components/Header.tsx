@@ -9,7 +9,8 @@ import { ExportMenu } from "./ExportMenu";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n";
-import { LanguageSwitcher } from "./LanguageSwitcher"; // Add this import
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { TTSController } from "./TTSController"; // Added import
 
 const FilePicker = dynamic(
   () => import("@/components/FilePicker").then((mod) => mod.FilePicker),
@@ -30,10 +31,11 @@ export const Header: FC = () => {
           <span className="sr-only">{t("home")}</span>
         </Link>
         <nav role="navigation" aria-label="Primary navigation" className="flex gap-2">
+          <TTSController containerId="viewer-content" /> {/* Added TTSController */}
           <ThemeToggle />
           <ExportMenu />
           <FilePicker />
-          <LanguageSwitcher /> {/* Add this line */}
+          <LanguageSwitcher />
         </nav>
       </div>
     </header>

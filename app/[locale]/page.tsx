@@ -1,3 +1,4 @@
+// app\[locale]\page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { LexicalViewer } from "@/components/LexicalViewer";
@@ -6,10 +7,8 @@ import { TabBar } from "@/components/TabBar";
 import { TabHydrate } from "@/components/TabHydrate";
 import { useTabStore } from "@/lib/tabStore";
 import { db } from "@/lib/db";
-import { TTSController } from "@/components/TTSController";
-import SelectionTTS from "@/components/SelectionTTS"; // Add this import
+import SelectionTTS from "@/components/SelectionTTS";
 
-// Dynamically import FileDropZone with SSR disabled, accessing the named export
 const FileDropZone = dynamic(() => import("@/components/FileDropZone").then(mod => mod.FileDropZone), {
   ssr: false,
 });
@@ -53,11 +52,10 @@ export default function ViewerPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            <TTSController containerId="viewer-content" />
             <div id="viewer-content" className="mx-auto max-w-4xl">
               <LexicalViewer markdown={markdown} />
             </div>
-            <SelectionTTS /> {/* Add this line */}
+            <SelectionTTS />
           </div>
         )}
       </div>
