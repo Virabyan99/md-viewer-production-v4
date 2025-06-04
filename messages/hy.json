@@ -1,26 +1,33 @@
 {
-    "header": {
-      "home": "Տուն"
-    },
-    "toggle": {
-      "theme": "Փոխել թեման"
-    },
-    "export": {
-      "menu": "Արտահանել",
-      "txt": "TXT",
-      "md": "Markdown",
-      "html": "HTML"
-    },
-    "viewer": {
-      "placeholder": {
-        "part1": "Փաստաթուղթը բեռնված չէ:",
-        "part2": "Քաշեք",
-        "part3": "ֆայլը սկսելու համար:"
-      }
-    },
-    "ui": {
-      "lang": {
-        "select": "Ընտրել լեզուն"
-      }
+  "header": {
+    "home": "Տուն"
+  },
+  "toggle": {
+    "theme": "Փոխել թեման"
+  },
+  "export": {
+    "menu": "Արտահանել",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "Փաստաթուղթը բեռնված չէ:",
+      "part2": "Քաշեք",
+      "part3": "ֆայլը սկսելու համար:"
     }
+  },
+  "ui": {
+    "lang": {
+      "select": "Ընտրել լեզուն"
+    }
+  },
+  "tts": {
+    "speak": "Խոսել",
+    "stop": "Դադարեցնել",
+    "pause": "Դադար",
+    "resume": "Շարունակել",
+    "speed": "Արագություն"
   }
+}

@@ -22,5 +22,12 @@
     "lang": {
       "select": "選擇語言"
     }
+  },
+  "tts": {
+    "speak": "說話",
+    "stop": "停止",
+    "pause": "暫停",
+    "resume": "恢復",
+    "speed": "速度"
   }
 }

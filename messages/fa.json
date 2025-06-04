@@ -1,26 +1,33 @@
 {
-    "header": {
-      "home": "خانه"
-    },
-    "toggle": {
-      "theme": "تغییر تم"
-    },
-    "export": {
-      "menu": "صادر کردن",
-      "txt": "TXT",
-      "md": "Markdown",
-      "html": "HTML"
-    },
-    "viewer": {
-      "placeholder": {
-        "part1": "سند بارگذاری نشده است.",
-        "part2": "فایل را",
-        "part3": "بکشید تا شروع شود."
-      }
-    },
-    "ui": {
-      "lang": {
-        "select": "انتخاب زبان"
-      }
+  "header": {
+    "home": "خانه"
+  },
+  "toggle": {
+    "theme": "تغییر تم"
+  },
+  "export": {
+    "menu": "صادر کردن",
+    "txt": "TXT",
+    "md": "Markdown",
+    "html": "HTML"
+  },
+  "viewer": {
+    "placeholder": {
+      "part1": "سند بارگذاری نشده است.",
+      "part2": "فایل را",
+      "part3": "بکشید تا شروع شود."
     }
+  },
+  "ui": {
+    "lang": {
+      "select": "انتخاب زبان"
+    }
+  },
+  "tts": {
+    "speak": "صحبت کردن",
+    "stop": "توقف",
+    "pause": "مکث",
+    "resume": "از سرگیری",
+    "speed": "سرعت"
   }
+}

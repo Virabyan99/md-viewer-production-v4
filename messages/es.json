@@ -22,5 +22,12 @@
     "lang": {
       "select": "Seleccionar Idioma"
     }
+  },
+  "tts": {
+    "speak": "Hablar",
+    "stop": "Detener",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "speed": "Velocidad"
   }
 }
