@@ -186,6 +186,7 @@
   @apply mt-6;
 }
 
+/* Ensure table retains its core structure */
 .prose table {
   width: 100%;
   border-collapse: collapse;
@@ -194,30 +195,70 @@
   margin-bottom: var(--baseline);
 }
 
+/* Style the table header with a background */
 .prose thead {
   background-color: #f9fafb; /* surface-50 */
 }
 
+/* Dark mode header background */
 .dark .prose thead {
   background-color: #1f2937; /* surface-800 */
 }
 
+/* Enhance table headers and cells with bold headers and adjusted padding */
 .prose th,
 .prose td {
   border: 1px solid var(--border);
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.75rem; /* Increased padding for better readability */
 }
 
+
+
+.prose th {
+  font-weight: 600; /* Make headers bold for a professional look */
+}
+
+/* Add hover effects to rows for better interactivity */
+.prose tr:hover td {
+  background-color: #f3f4f6; /* Light mode hover background */
+}
+
+/* Dark mode hover effect */
+.dark .prose tr:hover td {
+  background-color: #374151; /* Dark mode hover background */
+}
+
+/* Maintain alternating row colors */
 .prose tr:nth-child(even) td {
   background-color: rgba(249, 250, 251, 0.5);
 }
 
+/* Dark mode alternating row colors */
 .dark .prose tr:nth-child(even) td {
   background-color: rgba(31, 41, 55, 0.3);
 }
+
+/* Optional: Smooth transition for hover effects */
+.prose td {
+  transition: background-color 0.2s ease;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 640px) {
+  .prose table th,
+  .prose table td {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
+.prose td p {
+  margin-bottom: 0;
+ }
+.prose th p {
+  margin-bottom: 0;
+ }
 
 .font-cmn { font-family: "Noto Sans SC", var(--font-sans); }
 .font-hin { font-family: "Noto Sans", var(--font-sans); }
@@ -231,14 +272,6 @@
   direction: rtl; 
 }
 
-@media (max-width: 640px) {
-  .prose table th,
-  .prose table td {
-    display: block;
-    width: 100%;
-    text-align: left;
-  }
-}
 
 @layer base {
   * {
