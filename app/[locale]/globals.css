@@ -231,6 +231,15 @@
   direction: rtl; 
 }
 
+@media (max-width: 640px) {
+  .prose table th,
+  .prose table td {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
