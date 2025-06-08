@@ -1,7 +1,4 @@
-/**
- * Tailwind-augmented theme mapping for Lexical nodes.
- * Extend or override this object per design system or brand theme.
- */
+// lib/lexicalTheme.ts
 export const lexicalTheme: Record<string, string | Record<string, string>> = {
   paragraph: "mb-[var(--baseline)] text-surface-900 dark:text-surface-50",
   text: {
@@ -28,7 +25,7 @@ export const lexicalTheme: Record<string, string | Record<string, string>> = {
     listitem: "my-1",
   },
   quote: "border-l-4 pl-4 bg-surface-50 text-surface-700 dark:bg-surface-900/40 dark:text-surface-200",
-  code: "rounded bg-muted px-4 py-2 font-mono text-sm text-surface-900 dark:text-surface-50",
+  code: "rounded bg-surface-900 text-surface-50 p-4 overflow-x-auto font-mono text-sm my-4",
   link: "text-brand underline hover:text-brand/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
   hr: "my-[calc(var(--baseline)*1.5)] border-t border-surface-200 dark:border-surface-700",
 };
