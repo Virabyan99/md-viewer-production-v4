@@ -1,6 +1,4 @@
-// components/LexicalViewer.tsx
 "use client";
-
 import { useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -10,15 +8,17 @@ import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-import { TableNode, TableRowNode, TableCellNode } from "@lexical/table";
+import { TableNode as LexicalTableNode, TableRowNode, TableCellNode } from "@lexical/table";
 import { PluginProvider } from "./PluginContext";
 import { TypographyPlugin } from "./TypographyPlugin";
 import { lexicalTheme } from "@/lib/lexicalTheme";
 import { useTranslations } from "next-intl";
 import { ensureFontFor } from "@/lib/fontLoader";
-import { parseMarkdownToHtml } from "@/lib/markdown";
+import { $convertFromMarkdownString } from "@lexical/markdown";
 import { $getRoot } from "lexical";
-import { $generateNodesFromDOM } from "@lexical/html";
+import { TRANSFORMERS } from "@/lib/transformers";
+import { PrismCodeHighlightNode, $createPrismCodeHighlightNode } from "./PrismCodeHighlightNode";
+import { TableNode } from "./TableNode"; // Import custom TableNode
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -26,6 +26,7 @@ interface LexicalViewerProps {
 
 export function LexicalViewer({ markdown }: LexicalViewerProps) {
   const t = useTranslations("viewer.placeholder");
+
   const composerConfig = {
     namespace: "markdown-viewer",
     editable: false,
@@ -41,9 +42,11 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       LinkNode,
       CodeNode,
       HorizontalRuleNode,
-      TableNode,
+      LexicalTableNode,
       TableRowNode,
       TableCellNode,
+      PrismCodeHighlightNode,
+      TableNode, // Register custom TableNode
     ],
   };
 
@@ -52,7 +55,9 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       <MarkdownLoader markdown={markdown} />
       <PluginProvider plugins={[TypographyPlugin]}>
         {markdown ? (
-          <ContentEditable className="prose dark:prose-invert max-w-none" />
+          <div>
+            <ContentEditable className="prose dark:prose-invert max-w-none" />
+          </div>
         ) : (
           <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
             <p>
@@ -73,14 +78,22 @@ function MarkdownLoader({ markdown }: { markdown: string | null }) {
   useEffect(() => {
     if (markdown) {
       ensureFontFor(markdown);
-      const htmlContent = parseMarkdownToHtml(markdown);
       editor.update(() => {
+        $convertFromMarkdownString(markdown, TRANSFORMERS);
         const root = $getRoot();
-        root.clear(); // Clear existing content
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(htmlContent, "text/html");
-        const nodes = $generateNodesFromDOM(editor, dom); // Pass editor as first argument
-        root.append(...nodes); // Append parsed nodes, including tables
+        root.getChildren().forEach((node) => {
+          if (node.getType() === 'code') {
+            const codeNode = node as CodeNode;
+            const language = codeNode.getLanguage() || 'text';
+            const code = codeNode.getTextContent();
+            const prismNode = $createPrismCodeHighlightNode(code, language);
+            node.replace(prismNode);
+          }
+        });
+      });
+    } else {
+      editor.update(() => {
+        $getRoot().clear();
       });
     }
   }, [editor, markdown]);

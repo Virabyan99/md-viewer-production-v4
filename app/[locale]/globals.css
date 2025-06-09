@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import 'prismjs/themes/prism-tomorrow.css';
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -272,6 +274,20 @@
   direction: rtl; 
 }
 
+
+.prose pre {
+  @apply bg-gray-100 p-4 rounded overflow-x-auto text-gray-900;
+}
+
+/* Dark Mode Code Blocks */
+.dark .prose pre {
+  @apply bg-gray-800 p-4 rounded overflow-x-auto text-gray-100;
+}
+
+/* Ensure code text inherits the correct color and has no extra background */
+.prose pre code {
+  @apply bg-transparent text-inherit;
+}
 
 @layer base {
   * {
