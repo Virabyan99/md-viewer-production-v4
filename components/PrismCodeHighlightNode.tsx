@@ -1,3 +1,4 @@
+// components/PrismCodeHighlightNode.tsx
 import { DecoratorNode, NodeKey, SerializedLexicalNode } from 'lexical';
 import Prism from 'prismjs';
 
@@ -23,6 +24,7 @@ export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
 
   createDOM() {
     const pre = document.createElement('pre');
+    pre.className = 'prose-pre'; // Add class for Tailwind styling
     pre.innerHTML = this.__html;
     return pre;
   }

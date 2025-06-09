@@ -1,6 +1,5 @@
+// prism/prismConfig.ts
 import Prism from 'prismjs';
-import 'prismjs/themes/prism-tomorrow.css'; // Use the same theme as the example
-
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-css';

@@ -56,7 +56,7 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       <PluginProvider plugins={[TypographyPlugin]}>
         {markdown ? (
           <div>
-            <ContentEditable className="prose dark:prose-invert max-w-none" />
+            <ContentEditable className="prose dark:prose-invert max-w-5xl" />
           </div>
         ) : (
           <div className="grid min-h-[40vh] place-content-center text-center text-muted-foreground">
