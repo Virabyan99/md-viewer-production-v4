@@ -6,7 +6,6 @@
   @import 'prismjs/themes/prism-tomorrow.css';
 }
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -192,7 +191,6 @@
   @apply mt-6;
 }
 
-/* Ensure table retains its core structure */
 .prose table {
   width: 100%;
   border-collapse: collapse;
@@ -201,55 +199,44 @@
   margin-bottom: var(--baseline);
 }
 
-/* Style the table header with a background */
 .prose thead {
-  background-color: #f9fafb; /* surface-50 */
+  background-color: #f9fafb;
 }
 
-/* Dark mode header background */
 .dark .prose thead {
-  background-color: #1f2937; /* surface-800 */
+  background-color: #1f2937;
 }
 
-/* Enhance table headers and cells with bold headers and adjusted padding */
 .prose th,
 .prose td {
   border: 1px solid var(--border);
-  padding: 0.75rem; /* Increased padding for better readability */
+  padding: 0.75rem;
 }
-
-
 
 .prose th {
-  font-weight: 600; /* Make headers bold for a professional look */
+  font-weight: 600;
 }
 
-/* Add hover effects to rows for better interactivity */
 .prose tr:hover td {
-  background-color: #f3f4f6; /* Light mode hover background */
+  background-color: #f3f4f6;
 }
 
-/* Dark mode hover effect */
 .dark .prose tr:hover td {
-  background-color: #374151; /* Dark mode hover background */
+  background-color: #374151;
 }
 
-/* Maintain alternating row colors */
 .prose tr:nth-child(even) td {
   background-color: rgba(249, 250, 251, 0.5);
 }
 
-/* Dark mode alternating row colors */
 .dark .prose tr:nth-child(even) td {
   background-color: rgba(31, 41, 55, 0.3);
 }
 
-/* Optional: Smooth transition for hover effects */
 .prose td {
   transition: background-color 0.2s ease;
 }
 
-/* Responsive behavior for smaller screens */
 @media (max-width: 640px) {
   .prose table th,
   .prose table td {
@@ -278,28 +265,16 @@
   direction: rtl; 
 }
 
-
 .prose pre {
-  @apply bg-gray-100 p-4 rounded overflow-x-auto text-gray-900;
+  @apply bg-muted p-4 rounded-md overflow-x-auto text-foreground;
 }
 
-/* Dark Mode Code Blocks */
 .dark .prose pre {
-  @apply bg-gray-800 p-4 rounded overflow-x-auto text-gray-100;
+  @apply bg-muted text-foreground;
 }
 
-/* Ensure code text inherits the correct color and has no extra background */
 .prose pre code {
   @apply bg-transparent text-inherit;
-}
-
-.prose-pre button {
-  color: inherit; /* Matches text color in light/dark mode */
-}
-
-.prose-pre span[role="status"] {
-  background-color: #10b981; /* Tailwind green-600 */
-  color: #fff;
 }
 
 @layer base {
