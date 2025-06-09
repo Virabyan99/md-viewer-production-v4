@@ -16,9 +16,10 @@ import { useTranslations } from "next-intl";
 import { ensureFontFor } from "@/lib/fontLoader";
 import { $convertFromMarkdownString } from "@lexical/markdown";
 import { $getRoot } from "lexical";
+import { $generateNodesFromDOM } from "@lexical/html";
 import { TRANSFORMERS } from "@/lib/transformers";
 import { PrismCodeHighlightNode, $createPrismCodeHighlightNode } from "./PrismCodeHighlightNode";
-import { TableNode } from "./TableNode"; // Import custom TableNode
+import { parseMarkdownTablesToHtml } from "@/lib/markdown";
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -46,7 +47,6 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       TableRowNode,
       TableCellNode,
       PrismCodeHighlightNode,
-      TableNode, // Register custom TableNode
     ],
   };
 
@@ -79,17 +79,32 @@ function MarkdownLoader({ markdown }: { markdown: string | null }) {
     if (markdown) {
       ensureFontFor(markdown);
       editor.update(() => {
-        $convertFromMarkdownString(markdown, TRANSFORMERS);
         const root = $getRoot();
-        root.getChildren().forEach((node) => {
-          if (node.getType() === 'code') {
-            const codeNode = node as CodeNode;
-            const language = codeNode.getLanguage() || 'text';
-            const code = codeNode.getTextContent();
-            const prismNode = $createPrismCodeHighlightNode(code, language);
-            node.replace(prismNode);
-          }
-        });
+        root.clear();
+
+        // Check if markdown contains a table
+        const hasTable = /^\|(.+)\|\n\|([: ]*[-]+[: ]*\|)+/m.test(markdown);
+        
+        if (hasTable) {
+          // Use remark/rehype for table rendering
+          const htmlContent = parseMarkdownTablesToHtml(markdown);
+          const parser = new DOMParser();
+          const dom = parser.parseFromString(htmlContent, "text/html");
+          const nodes = $generateNodesFromDOM(editor, dom);
+          root.append(...nodes);
+        } else {
+          // Use existing transformer-based parsing for non-table content
+          $convertFromMarkdownString(markdown, TRANSFORMERS);
+          root.getChildren().forEach((node) => {
+            if (node.getType() === "code") {
+              const codeNode = node as CodeNode;
+              const language = codeNode.getLanguage() || "text";
+              const code = codeNode.getTextContent();
+              const prismNode = $createPrismCodeHighlightNode(code, language);
+              node.replace(prismNode);
+            }
+          });
+        }
       });
     } else {
       editor.update(() => {
