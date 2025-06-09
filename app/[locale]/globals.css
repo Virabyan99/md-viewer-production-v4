@@ -293,6 +293,15 @@
   @apply bg-transparent text-inherit;
 }
 
+.prose-pre button {
+  color: inherit; /* Matches text color in light/dark mode */
+}
+
+.prose-pre span[role="status"] {
+  background-color: #10b981; /* Tailwind green-600 */
+  color: #fff;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
