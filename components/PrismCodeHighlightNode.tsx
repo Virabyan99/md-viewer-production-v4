@@ -1,29 +1,31 @@
 import { DecoratorNode, NodeKey, SerializedLexicalNode } from 'lexical';
-import Prism from 'prismjs';
+import Prism from '@/prism/prismConfig'; // Adjusted path
 import { useCodeModal } from "./CodeModalContext";
 
 export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
   __html: string;
   __code: string;
   __language: string;
+  __broken: boolean;
 
   static getType() {
     return 'prism-code-highlight';
   }
 
   static clone(node: PrismCodeHighlightNode) {
-    return new PrismCodeHighlightNode(node.__html, node.__code, node.__language, node.__key);
+    return new PrismCodeHighlightNode(node.__html, node.__code, node.__language, node.__broken, node.__key);
   }
 
-  static importJSON(json: SerializedLexicalNode & { html: string; code: string; language: string }) {
-    return new PrismCodeHighlightNode(json.html, json.code, json.language);
+  static importJSON(json: SerializedLexicalNode & { html: string; code: string; language: string; broken: boolean }) {
+    return new PrismCodeHighlightNode(json.html, json.code, json.language, json.broken || false);
   }
 
-  constructor(html: string, code: string, language: string, key?: NodeKey) {
+  constructor(html: string, code: string, language: string, broken: boolean = false, key?: NodeKey) {
     super(key);
     this.__html = html;
     this.__code = code;
     this.__language = language;
+    this.__broken = broken;
   }
 
   createDOM() {
@@ -34,6 +36,13 @@ export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
     pre.className = 'prose-pre';
     pre.innerHTML = this.__html;
     container.appendChild(pre);
+
+    if (this.__broken) {
+      const warning = document.createElement('div');
+      warning.className = 'absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl z-10';
+      warning.textContent = 'Unterminated code fence';
+      container.appendChild(warning);
+    }
 
     const copyButton = document.createElement('button');
     copyButton.className = 'absolute -top-4 right-2 opacity-70 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10';
@@ -81,28 +90,29 @@ export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
     return null;
   }
 
-  exportJSON(): SerializedLexicalNode & { html: string; code: string; language: string } {
+  exportJSON(): SerializedLexicalNode & { html: string; code: string; language: string; broken: boolean } {
     return {
       type: 'prism-code-highlight',
       version: 1,
       html: this.__html,
       code: this.__code,
       language: this.__language,
+      broken: this.__broken,
     };
   }
 }
 
-export function $createPrismCodeHighlightNode(code: string, language: string): PrismCodeHighlightNode {
+export function $createPrismCodeHighlightNode(code: string, language: string, broken: boolean = false): PrismCodeHighlightNode {
+  console.log(`Highlighting ${language}:`, Prism.languages[language]); // Debug
   const highlightedCode = Prism.highlight(
     code,
     Prism.languages[language] || Prism.languages.text,
     language
   );
   const html = `<code class="language-${language}">${highlightedCode}</code>`;
-  return new PrismCodeHighlightNode(html, code, language);
+  return new PrismCodeHighlightNode(html, code, language, broken);
 }
 
-// Expose context globally for DOM access
 declare global {
   interface Window {
     __codeModalContext?: { openModal: (code: string, language: string) => void };

@@ -1,8 +1,8 @@
 "use client";
-import { useEffect } from "react";
+import { useState } from "react";
+import Prism from "@/prism/prismConfig"; // Ensure Prism is loaded
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
@@ -13,13 +13,8 @@ import { PluginProvider } from "./PluginContext";
 import { TypographyPlugin } from "./TypographyPlugin";
 import { lexicalTheme } from "@/lib/lexicalTheme";
 import { useTranslations } from "next-intl";
-import { ensureFontFor } from "@/lib/fontLoader";
-import { $convertFromMarkdownString } from "@lexical/markdown";
-import { $getRoot } from "lexical";
-import { $generateNodesFromDOM } from "@lexical/html";
-import { TRANSFORMERS } from "@/lib/transformers";
-import { PrismCodeHighlightNode, $createPrismCodeHighlightNode } from "./PrismCodeHighlightNode";
-import { parseMarkdownTablesToHtml } from "@/lib/markdown";
+import { MarkdownLoader } from "./MarkdownLoader";
+import { PrismCodeHighlightNode } from "./PrismCodeHighlightNode"; // Assuming this is your custom node
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -27,6 +22,7 @@ interface LexicalViewerProps {
 
 export function LexicalViewer({ markdown }: LexicalViewerProps) {
   const t = useTranslations("viewer.placeholder");
+  const [errors, setErrors] = useState<string[]>([]);
 
   const composerConfig = {
     namespace: "markdown-viewer",
@@ -36,24 +32,33 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       throw error;
     },
     nodes: [
-      HeadingNode,
-      QuoteNode,
-      ListNode,
-      ListItemNode,
-      LinkNode,
-      CodeNode,
-      HorizontalRuleNode,
-      LexicalTableNode,
-      TableRowNode,
-      TableCellNode,
-      PrismCodeHighlightNode,
+      HeadingNode,        // For Markdown headings (#, ##, etc.)
+      QuoteNode,          // For blockquotes (>)
+      ListNode,           // For ordered/unordered lists
+      ListItemNode,       // Required for list items
+      LinkNode,           // For hyperlinks
+      CodeNode,           // For code blocks (```)
+      HorizontalRuleNode, // For horizontal rules (---)
+      LexicalTableNode,   // For tables
+      TableRowNode,       // Required for table rows
+      TableCellNode,      // Required for table cells
+      PrismCodeHighlightNode, // Your custom node for code highlighting
     ],
   };
 
   return (
     <LexicalComposer initialConfig={composerConfig}>
-      <MarkdownLoader markdown={markdown} />
+      <MarkdownLoader markdown={markdown} setErrors={setErrors} />
       <PluginProvider plugins={[TypographyPlugin]}>
+        {errors.length > 0 && (
+          <div className="mb-4 p-2 bg-yellow-50 border-l-4 border-yellow-400 rounded text-yellow-900">
+            <ul>
+              {errors.map((err, i) => (
+                <li key={i}>⚠️ {err}</li>
+              ))}
+            </ul>
+          </div>
+        )}
         {markdown ? (
           <div>
             <ContentEditable className="prose dark:prose-invert max-w-5xl" />
@@ -70,48 +75,4 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       </PluginProvider>
     </LexicalComposer>
   );
-}
-
-function MarkdownLoader({ markdown }: { markdown: string | null }) {
-  const [editor] = useLexicalComposerContext();
-
-  useEffect(() => {
-    if (markdown) {
-      ensureFontFor(markdown);
-      editor.update(() => {
-        const root = $getRoot();
-        root.clear();
-
-        // Check if markdown contains a table
-        const hasTable = /^\|(.+)\|\n\|([: ]*[-]+[: ]*\|)+/m.test(markdown);
-        
-        if (hasTable) {
-          // Use remark/rehype for table rendering
-          const htmlContent = parseMarkdownTablesToHtml(markdown);
-          const parser = new DOMParser();
-          const dom = parser.parseFromString(htmlContent, "text/html");
-          const nodes = $generateNodesFromDOM(editor, dom);
-          root.append(...nodes);
-        } else {
-          // Use existing transformer-based parsing for non-table content
-          $convertFromMarkdownString(markdown, TRANSFORMERS);
-          root.getChildren().forEach((node) => {
-            if (node.getType() === "code") {
-              const codeNode = node as CodeNode;
-              const language = codeNode.getLanguage() || "text";
-              const code = codeNode.getTextContent();
-              const prismNode = $createPrismCodeHighlightNode(code, language);
-              node.replace(prismNode);
-            }
-          });
-        }
-      });
-    } else {
-      editor.update(() => {
-        $getRoot().clear();
-      });
-    }
-  }, [editor, markdown]);
-
-  return null;
 }

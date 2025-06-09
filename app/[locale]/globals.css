@@ -1,9 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import 'prismjs/themes/prism-tomorrow.css';
+@import 'prismjs/themes/prism.css';
 
 .dark {
-  @import 'prismjs/themes/prism-tomorrow.css';
+  @import 'prismjs/themes/prism.css';
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -274,7 +274,7 @@
 }
 
 .prose pre code {
-  @apply bg-transparent text-inherit;
+  @apply bg-transparent 
 }
 
 @layer base {

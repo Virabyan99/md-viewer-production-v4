@@ -89,7 +89,7 @@ export default function ViewerPage() {
       <CodeModalInitializer />
       <TabHydrate>
         <TabBar />
-        <div className="py-8 h-full" onDrop={handleDrop} onDragOver={handleDragOver}>
+        <div className="py-8 pl-15 h-full" onDrop={handleDrop} onDragOver={handleDragOver}>
           {tabs.length === 0 ? (
             <div className="flex flex-col cursor-pointer items-center justify-center gap-4">
               <FileDropZone />
