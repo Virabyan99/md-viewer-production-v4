@@ -1,96 +1,129 @@
-import { DecoratorNode, NodeKey, SerializedLexicalNode } from 'lexical';
-import Prism from '@/prism/prismConfig'; // Adjusted path
-import { useCodeModal } from "./CodeModalContext";
+import { DecoratorNode, NodeKey, SerializedLexicalNode } from 'lexical'
+import Prism from '@/prism/prismConfig' // Adjusted path
+import { useCodeModal } from './CodeModalContext'
 
 export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
-  __html: string;
-  __code: string;
-  __language: string;
-  __broken: boolean;
+  __html: string
+  __code: string
+  __language: string
+  __broken: boolean
 
   static getType() {
-    return 'prism-code-highlight';
+    return 'prism-code-highlight'
   }
 
   static clone(node: PrismCodeHighlightNode) {
-    return new PrismCodeHighlightNode(node.__html, node.__code, node.__language, node.__broken, node.__key);
+    return new PrismCodeHighlightNode(
+      node.__html,
+      node.__code,
+      node.__language,
+      node.__broken,
+      node.__key
+    )
   }
 
-  static importJSON(json: SerializedLexicalNode & { html: string; code: string; language: string; broken: boolean }) {
-    return new PrismCodeHighlightNode(json.html, json.code, json.language, json.broken || false);
+  static importJSON(
+    json: SerializedLexicalNode & {
+      html: string
+      code: string
+      language: string
+      broken: boolean
+    }
+  ) {
+    return new PrismCodeHighlightNode(
+      json.html,
+      json.code,
+      json.language,
+      json.broken || false
+    )
   }
 
-  constructor(html: string, code: string, language: string, broken: boolean = false, key?: NodeKey) {
-    super(key);
-    this.__html = html;
-    this.__code = code;
-    this.__language = language;
-    this.__broken = broken;
+  constructor(
+    html: string,
+    code: string,
+    language: string,
+    broken: boolean = false,
+    key?: NodeKey
+  ) {
+    super(key)
+    this.__html = html
+    this.__code = code
+    this.__language = language
+    this.__broken = broken
   }
 
   createDOM() {
-    const container = document.createElement('div');
-    container.className = 'relative group';
+    const container = document.createElement('div')
+    container.className = 'relative group'
 
-    const pre = document.createElement('pre');
-    pre.className = 'prose-pre';
-    pre.innerHTML = this.__html;
-    container.appendChild(pre);
+    const pre = document.createElement('pre')
+    pre.className = 'prose-pre'
+    pre.innerHTML = this.__html
+    container.appendChild(pre)
 
     if (this.__broken) {
-      const warning = document.createElement('div');
-      warning.className = 'absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl z-10';
-      warning.textContent = 'Unterminated code fence';
-      container.appendChild(warning);
+      const warning = document.createElement('div')
+      warning.className =
+        'absolute top-0 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded-bl z-10'
+      warning.textContent = 'Unterminated code fence'
+      container.appendChild(warning)
     }
 
-    const copyButton = document.createElement('button');
-    copyButton.className = 'absolute -top-4 right-2 opacity-70 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10';
-    copyButton.setAttribute('aria-label', 'Copy code to clipboard');
-    copyButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    const copyButton = document.createElement('button')
+    copyButton.className =
+      'icon-button absolute -top-4 right-2 opacity-70 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10'
+    copyButton.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>'
 
-    const feedback = document.createElement('span');
-    feedback.className = 'absolute -top-4 right-12 bg-green-600 text-white text-xs px-2 py-1 rounded shadow hidden';
-    feedback.setAttribute('role', 'status');
-    feedback.setAttribute('aria-live', 'polite');
-    feedback.textContent = 'Copied!';
+    const feedback = document.createElement('span')
+    feedback.className =
+      'absolute -top-4 right-12 bg-green-600 text-white text-xs px-2 py-1 rounded shadow hidden'
+    feedback.setAttribute('role', 'status')
+    feedback.setAttribute('aria-live', 'polite')
+    feedback.textContent = 'Copied!'
 
     copyButton.addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(this.__code);
-        feedback.classList.remove('hidden');
-        setTimeout(() => feedback.classList.add('hidden'), 2000);
+        await navigator.clipboard.writeText(this.__code)
+        feedback.classList.remove('hidden')
+        setTimeout(() => feedback.classList.add('hidden'), 2000)
       } catch (e) {
-        console.error('Failed to copy code:', e);
+        console.error('Failed to copy code:', e)
       }
-    });
+    })
 
-    const expandButton = document.createElement('button');
-    expandButton.className = 'absolute top-2 right-2 opacity-70 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10';
-    expandButton.setAttribute('aria-label', 'Expand code block');
-    expandButton.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="12" height="12" rx="2" /></svg>';
+    const expandButton = document.createElement('button')
+    expandButton.className = 'icon-button absolute top-2 right-2 opacity-70 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10';
+    expandButton.setAttribute('aria-label', 'Expand code block')
+    expandButton.innerHTML =
+      '<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="12" height="12" rx="2" /></svg>'
 
     expandButton.addEventListener('click', () => {
-      const { openModal } = window.__codeModalContext || { openModal: () => {} };
-      openModal(this.__code, this.__language);
-    });
+      const { openModal } = window.__codeModalContext || { openModal: () => {} }
+      openModal(this.__code, this.__language)
+    })
 
-    container.appendChild(copyButton);
-    container.appendChild(feedback);
-    container.appendChild(expandButton);
+    container.appendChild(copyButton)
+    container.appendChild(feedback)
+    container.appendChild(expandButton)
 
-    return container;
+    return container
   }
 
   updateDOM() {
-    return false;
+    return false
   }
 
   decorate() {
-    return null;
+    return null
   }
 
-  exportJSON(): SerializedLexicalNode & { html: string; code: string; language: string; broken: boolean } {
+  exportJSON(): SerializedLexicalNode & {
+    html: string
+    code: string
+    language: string
+    broken: boolean
+  } {
     return {
       type: 'prism-code-highlight',
       version: 1,
@@ -98,23 +131,27 @@ export class PrismCodeHighlightNode extends DecoratorNode<JSX.Element | null> {
       code: this.__code,
       language: this.__language,
       broken: this.__broken,
-    };
+    }
   }
 }
 
-export function $createPrismCodeHighlightNode(code: string, language: string, broken: boolean = false): PrismCodeHighlightNode {
-  console.log(`Highlighting ${language}:`, Prism.languages[language]); // Debug
+export function $createPrismCodeHighlightNode(
+  code: string,
+  language: string,
+  broken: boolean = false
+): PrismCodeHighlightNode {
+  console.log(`Highlighting ${language}:`, Prism.languages[language]) // Debug
   const highlightedCode = Prism.highlight(
     code,
     Prism.languages[language] || Prism.languages.text,
     language
-  );
-  const html = `<code class="language-${language}">${highlightedCode}</code>`;
-  return new PrismCodeHighlightNode(html, code, language, broken);
+  )
+  const html = `<code class="language-${language}">${highlightedCode}</code>`
+  return new PrismCodeHighlightNode(html, code, language, broken)
 }
 
 declare global {
   interface Window {
-    __codeModalContext?: { openModal: (code: string, language: string) => void };
+    __codeModalContext?: { openModal: (code: string, language: string) => void }
   }
 }

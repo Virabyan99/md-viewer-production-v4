@@ -61,9 +61,9 @@ export function FullscreenCodeModal() {
                 
             </div>
           </div>
-          <div className="relative bg-muted rounded-md p-4 overflow-auto max-h-[70vh]">
-            <HighlightedCode code={code} language={language} />
-          </div>
+          <div className="relative fullscreen-code-block rounded-md p-4 overflow-auto max-h-[70vh]">
+  <HighlightedCode code={code} language={language} />
+</div>
         </animated.div>
       </DialogContent>
     </Dialog>

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import 'prismjs/themes/prism.css';
+@import 'prismjs/themes/prism-tomorrow.css';
 
 .dark {
-  @import 'prismjs/themes/prism.css';
+  @import 'prismjs/themes/prism-tomorrow.css';
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -82,6 +82,7 @@
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
   --baseline: 1.5rem;
+  --code-bg-light: oklch(0.3 0.05 260);
 }
 
 .dark {
@@ -266,7 +267,8 @@
 }
 
 .prose pre {
-  @apply bg-muted p-4 rounded-md overflow-x-auto text-foreground;
+  background-color: var(--code-bg-light);
+  @apply p-4 rounded-md overflow-x-auto text-foreground;
 }
 
 .dark .prose pre {
@@ -275,6 +277,18 @@
 
 .prose pre code {
   @apply bg-transparent 
+}
+
+.fullscreen-code-block {
+  background-color: var(--code-bg-light);
+}
+
+.dark .fullscreen-code-block {
+  @apply bg-muted;
+}
+
+.icon-button {
+  color: white;
 }
 
 @layer base {
