@@ -1,10 +1,15 @@
 import { DecoratorNode, NodeKey, SerializedLexicalNode } from "lexical";
 import { JSX } from "react";
+import { remark } from 'remark';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import { Root as MdastRoot, Paragraph as MdastParagraph } from 'mdast'; // Add mdast types
+import { Root as HastRoot } from 'hast'; // Add hast types
 
 interface TableData {
-  headers: string[];
+  headers: any[];
   alignments: (string | null)[];
-  rows: string[][];
+  rows: any[][];
 }
 
 export class TableNode extends DecoratorNode<JSX.Element> {
@@ -27,17 +32,37 @@ export class TableNode extends DecoratorNode<JSX.Element> {
     this.__tableData = tableData;
   }
 
+  private astToHtml(ast: any): string {
+    const processor = remark()
+      .use(remarkRehype)
+      .use(rehypeStringify);
+
+    // Define wrappedAst with explicit mdast types
+    const wrappedAst: MdastRoot = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: ast
+        } as MdastParagraph
+      ]
+    };
+
+    // Transform mdast to hast, then stringify
+    const hast = processor.runSync(wrappedAst) as HastRoot;
+    const html = processor.stringify(hast);
+    return html.replace(/^<p>/, '').replace(/<\/p>$/, '');
+  }
+
   createDOM() {
-    const div = document.createElement("div");
-    div.className = "table-container";
     const { headers, alignments, rows } = this.__tableData;
     const tableHtml = `
-      <table class="table border-collapse border border-gray-400 w-full my-4">
+      <table>
         <thead>
           <tr>
-            ${headers.map((header, i) => `
-              <th class="border border-gray-300 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:border-gray-600" style="text-align: ${alignments[i] || 'left'}">
-                ${header}
+            ${headers.map((headerAst, i) => `
+              <th style="text-align: ${alignments[i] || 'left'}">
+                ${this.astToHtml(headerAst)}
               </th>
             `).join('')}
           </tr>
@@ -45,9 +70,9 @@ export class TableNode extends DecoratorNode<JSX.Element> {
         <tbody>
           ${rows.map((row) => `
             <tr>
-              ${row.map((cell, j) => `
-                <td class="border border-gray-300 px-4 py-2 dark:border-gray-600" style="text-align: ${alignments[j] || 'left'}">
-                  ${cell}
+              ${row.map((cellAst, j) => `
+                <td style="text-align: ${alignments[j] || 'left'}">
+                  ${this.astToHtml(cellAst)}
                 </td>
               `).join('')}
             </tr>
@@ -55,8 +80,15 @@ export class TableNode extends DecoratorNode<JSX.Element> {
         </tbody>
       </table>
     `;
-    div.innerHTML = tableHtml;
-    return div;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(tableHtml, 'text/html');
+    const table = doc.querySelector('table');
+    if (table) {
+      return table;
+    } else {
+      throw new Error("Table not found in generated HTML");
+    }
   }
 
   updateDOM() {
@@ -64,7 +96,7 @@ export class TableNode extends DecoratorNode<JSX.Element> {
   }
 
   decorate() {
-    return <div />; // Fixes TypeScript error
+    return <div />;
   }
 
   exportJSON(): SerializedLexicalNode & { tableData: TableData } {

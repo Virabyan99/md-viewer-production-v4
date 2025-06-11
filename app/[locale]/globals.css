@@ -216,6 +216,7 @@
 
 .prose th {
   font-weight: 600;
+  
 }
 
 .prose tr:hover td {
@@ -236,6 +237,7 @@
 
 .prose td {
   transition: background-color 0.2s ease;
+  
 }
 
 @media (max-width: 640px) {
@@ -249,9 +251,11 @@
 
 .prose td p {
   margin-bottom: 0;
+  
  }
 .prose th p {
   margin-bottom: 0;
+  
  }
 
 .font-cmn { font-family: "Noto Sans SC", var(--font-sans); }

@@ -1,9 +1,8 @@
 export function extractTableData(tableNode: any): {
-  headers: string[];
+  headers: any[];
   alignments: (string | null)[];
-  rows: string[][];
+  rows: any[][];
 } {
-  // Check if tableNode has children and at least 2 rows
   if (!tableNode.children || tableNode.children.length < 2) {
     console.warn("Invalid table: insufficient rows", tableNode);
     return { headers: [], alignments: [], rows: [] };
@@ -12,12 +11,10 @@ export function extractTableData(tableNode: any): {
   const headerRow = tableNode.children[0];
   const separatorRow = tableNode.children[1];
 
-  // Extract headers with fallback for missing values
-  const headers = headerRow.children.map(
-    (cell: any) => cell.children?.[0]?.value || ""
-  );
+  // Extract headers as AST nodes
+  const headers = headerRow.children.map((cell: any) => cell.children || []);
 
-  // Extract alignments with safer access and default to null if invalid
+  // Extract alignments from separator row
   const alignments = separatorRow.children.map((cell: any) => {
     const text = cell.children?.[0]?.value?.trim() || "";
     if (text.startsWith(":") && text.endsWith(":")) return "center";
@@ -26,9 +23,9 @@ export function extractTableData(tableNode: any): {
     return null;
   });
 
-  // Extract data rows, handling missing cells
+  // Extract data rows as AST nodes
   const rows = tableNode.children.slice(2).map((row: any) =>
-    row.children.map((cell: any) => cell.children?.[0]?.value || "")
+    row.children.map((cell: any) => cell.children || [])
   );
 
   return { headers, alignments, rows };
