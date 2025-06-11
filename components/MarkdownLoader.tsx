@@ -18,46 +18,48 @@ interface MarkdownLoaderProps {
 export function MarkdownLoader({ markdown, setErrors }: MarkdownLoaderProps) {
   const [editor] = useLexicalComposerContext();
 
-  useEffect(() => {
-    if (markdown) {
-      ensureFontFor(markdown);
-      editor.update(() => {
-        const root = $getRoot();
-        root.clear();
+ useEffect(() => {
+  if (markdown) {
+    ensureFontFor(markdown);
+    editor.update(() => {
+      const root = $getRoot();
+      root.clear();
 
-        const hasTable = /^\|(.+)\|\n\|([: ]*[-]+[: ]*\|)+/m.test(markdown);
+      const hasTable = /^\|(.+)\|\n\|([: ]*[-]+[: ]*\|)+/m.test(markdown);
 
-        if (hasTable) {
-          const htmlContent = parseMarkdownTablesToHtml(markdown);
-          const parser = new DOMParser();
-          const dom = parser.parseFromString(htmlContent, "text/html");
-          const nodes = $generateNodesFromDOM(editor, dom);
-          root.append(...nodes);
-        } else {
-          $convertFromMarkdownString(markdown, TRANSFORMERS);
-          const { codeBlocks, errors } = parseCodeFences(markdown);
-          setErrors(errors); // Set errors in parent state
+      if (hasTable) {
+        const htmlContent = parseMarkdownTablesToHtml(markdown);
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(htmlContent, "text/html");
+        const nodes = $generateNodesFromDOM(editor, dom);
+        root.append(...nodes);
+      } else {
+        $convertFromMarkdownString(markdown, TRANSFORMERS);
+      }
 
-          root.getChildren().forEach((node) => {
-            if (node.getType() === "code") {
-              const codeNode = node as CodeNode;
-              const language = codeNode.getLanguage() || "text";
-              const code = codeNode.getTextContent();
-              const block = codeBlocks.find((b) => b.code === code); // Simplified matching
-              const broken = block ? block.broken : false;
-              const prismNode = $createPrismCodeHighlightNode(code, language, broken);
-              node.replace(prismNode);
-            }
-          });
+      // Replace code nodes with PrismCodeHighlightNode for both branches
+      const { codeBlocks, errors } = parseCodeFences(markdown);
+      setErrors(errors);
+
+      root.getChildren().forEach((node) => {
+        if (node.getType() === "code") {
+          const codeNode = node as CodeNode;
+          const language = codeNode.getLanguage() || "text";
+          const code = codeNode.getTextContent();
+          const block = codeBlocks.find((b) => b.code === code);
+          const broken = block ? block.broken : false;
+          const prismNode = $createPrismCodeHighlightNode(code, language, broken);
+          node.replace(prismNode);
         }
       });
-    } else {
-      setErrors([]); // Clear errors when markdown is null
-      editor.update(() => {
-        $getRoot().clear();
-      });
-    }
-  }, [editor, markdown, setErrors]);
+    });
+  } else {
+    setErrors([]);
+    editor.update(() => {
+      $getRoot().clear();
+    });
+  }
+}, [editor, markdown, setErrors]);
 
   return null;
 }
