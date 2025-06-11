@@ -1,58 +1,40 @@
 import { useEffect } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getRoot } from "lexical";
-import { $convertFromMarkdownString } from "@lexical/markdown";
-import { $generateNodesFromDOM } from "@lexical/html";
-import { CodeNode } from "@lexical/code";
+import { remark } from "remark";
+import remarkGfm from "remark-gfm";
+import { createLexicalNodesFromAST } from "@/lib/astToLexical";
 import { ensureFontFor } from "@/lib/fontLoader";
-import { parseCodeFences } from "@/lib/parseCodeFences";
-import { parseMarkdownTablesToHtml } from "@/lib/markdown";
-import { TRANSFORMERS } from "@/lib/transformers";
-import { $createPrismCodeHighlightNode } from "./PrismCodeHighlightNode";
 
 interface MarkdownLoaderProps {
   markdown: string | null;
-  setErrors: (errors: string[]) => void; // Add setErrors prop
+  setErrors: (errors: string[]) => void;
 }
 
 export function MarkdownLoader({ markdown, setErrors }: MarkdownLoaderProps) {
   const [editor] = useLexicalComposerContext();
 
- useEffect(() => {
+useEffect(() => {
   if (markdown) {
     ensureFontFor(markdown);
+    const processor = remark().use(remarkGfm);
+    const ast = processor.parse(markdown);
+    console.log('Parsed AST:', JSON.stringify(ast, null, 2));
     editor.update(() => {
       const root = $getRoot();
       root.clear();
-
-      const hasTable = /^\|(.+)\|\n\|([: ]*[-]+[: ]*\|)+/m.test(markdown);
-
-      if (hasTable) {
-        const htmlContent = parseMarkdownTablesToHtml(markdown);
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(htmlContent, "text/html");
-        const nodes = $generateNodesFromDOM(editor, dom);
-        root.append(...nodes);
-      } else {
-        $convertFromMarkdownString(markdown, TRANSFORMERS);
-      }
-
-      // Replace code nodes with PrismCodeHighlightNode for both branches
-      const { codeBlocks, errors } = parseCodeFences(markdown);
-      setErrors(errors);
-
-      root.getChildren().forEach((node) => {
-        if (node.getType() === "code") {
-          const codeNode = node as CodeNode;
-          const language = codeNode.getLanguage() || "text";
-          const code = codeNode.getTextContent();
-          const block = codeBlocks.find((b) => b.code === code);
-          const broken = block ? block.broken : false;
-          const prismNode = $createPrismCodeHighlightNode(code, language, broken);
-          node.replace(prismNode);
+      ast.children.forEach((astNode: any) => {
+        const lexicalNode = createLexicalNodesFromAST(astNode);
+        if (lexicalNode) {
+          console.log("Appending node of type:", lexicalNode.getType());
+          root.append(lexicalNode);
         }
       });
     });
+    // Log state after update
+    setTimeout(() => {
+      console.log("Editor state after update:", JSON.stringify(editor.getEditorState().toJSON(), null, 2));
+    }, 0);
   } else {
     setErrors([]);
     editor.update(() => {

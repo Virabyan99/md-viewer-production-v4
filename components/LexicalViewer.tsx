@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Prism from "@/prism/prismConfig"; // Ensure Prism is loaded
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -8,13 +7,14 @@ import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
 import { CodeNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-import { TableNode as LexicalTableNode, TableRowNode, TableCellNode } from "@lexical/table";
 import { PluginProvider } from "./PluginContext";
 import { TypographyPlugin } from "./TypographyPlugin";
 import { lexicalTheme } from "@/lib/lexicalTheme";
 import { useTranslations } from "next-intl";
 import { MarkdownLoader } from "./MarkdownLoader";
-import { PrismCodeHighlightNode } from "./PrismCodeHighlightNode"; // Assuming this is your custom node
+import { PrismCodeHighlightNode } from "./PrismCodeHighlightNode";
+import { TableNode } from "./TableNode";
+import { PrismHighlightPlugin } from "./PrismHighlightPlugin";
 
 interface LexicalViewerProps {
   markdown: string | null;
@@ -32,17 +32,15 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
       throw error;
     },
     nodes: [
-      HeadingNode,        // For Markdown headings (#, ##, etc.)
-      QuoteNode,          // For blockquotes (>)
-      ListNode,           // For ordered/unordered lists
-      ListItemNode,       // Required for list items
-      LinkNode,           // For hyperlinks
-      CodeNode,           // For code blocks (```)
-      HorizontalRuleNode, // For horizontal rules (---)
-      LexicalTableNode,   // For tables
-      TableRowNode,       // Required for table rows
-      TableCellNode,      // Required for table cells
-      PrismCodeHighlightNode, // Your custom node for code highlighting
+      HeadingNode,
+      QuoteNode,
+      ListNode,
+      ListItemNode,
+      LinkNode,
+      CodeNode,
+      HorizontalRuleNode,
+      TableNode,
+      PrismCodeHighlightNode,
     ],
   };
 
@@ -50,6 +48,7 @@ export function LexicalViewer({ markdown }: LexicalViewerProps) {
     <LexicalComposer initialConfig={composerConfig}>
       <MarkdownLoader markdown={markdown} setErrors={setErrors} />
       <PluginProvider plugins={[TypographyPlugin]}>
+        <PrismHighlightPlugin />
         {errors.length > 0 && (
           <div className="mb-4 p-2 bg-yellow-50 border-l-4 border-yellow-400 rounded text-yellow-900">
             <ul>
